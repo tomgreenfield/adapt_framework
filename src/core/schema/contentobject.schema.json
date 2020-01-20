@@ -1,0 +1,257 @@
+{
+  "$id": "https://www.adaptlearning.org",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "contentobject",
+  "type": "object",
+  "required": [
+    "title",
+    "linkText"
+  ],
+  "properties": {
+    "title": {
+      "type": "string",
+      "title": "Title",
+      "default": "New Menu/Page Title",
+      "_adapt": {
+        "translatable": true
+      }
+    },
+    "displayTitle": {
+      "type": "string",
+      "title": "Display title",
+      "description": "When viewing a menu/page - this is the title that will be displayed on the menu/page",
+      "default": "New Menu/Page Title",
+      "_adapt": {
+        "translatable": true
+      },
+      "_backboneForms": "DisplayTitle"
+    },
+    "subtitle": {
+      "type": "string",
+      "title": "Subtitle",
+      "description": "When viewing a menu/page - this is the subtitle that will be displayed on the menu/page",
+      "default": "",
+      "_adapt": {
+        "translatable": true
+      }
+    },
+    "pageBody": {
+      "type": "string",
+      "title": "Page body",
+      "description": "If set, this text will be shown instead of the body text when this page is viewed.",
+      "default": "",
+      "_adapt": {
+        "translatable": true
+      },
+      "_backboneForms": "TextArea"
+    },
+    "body": {
+      "type": "string",
+      "title": "Body",
+      "default": "",
+      "_adapt": {
+        "translatable": true
+      },
+      "_backboneForms": "TextArea"
+    },
+    "instruction": {
+      "type": "string",
+      "title": "Instruction text",
+      "default": "",
+      "_adapt": {
+        "translatable": true
+      }
+    },
+    "_htmlClasses": {
+      "type": "string",
+      "title": "HTML Classes",
+      "description": "If set, this CSS class/es will be applied to the <html> element whenever this is the active page in the course. These are predefined in the theme or added in Project Settings > Custom CSS/Less code.",
+      "default": ""
+    },
+    "_graphic": {
+      "type": "object",
+      "title": "Graphic",
+      "properties": {
+        "alt": {
+          "type": "string",
+          "title": "Alt",
+          "description": "This is the alternative text that is displayed when the image is not visible. This is also used by screen readers.",
+          "default": "",
+          "_adapt": {
+            "translatable": true
+          }
+        },
+        "src": {
+          "type": "string",
+          "title": "Src",
+          "description": "This is the link to the image.",
+          "default": "",
+          "_backboneForms": "Asset:image"
+        }
+      }
+    },
+    "linkText": {
+      "type": "string",
+      "title": "Button link text",
+      "default": "View",
+      "_adapt": {
+        "translatable": true
+      }
+    },
+    "duration": {
+      "type": "string",
+      "title": "Duration",
+      "description": "Indicates how long this page or section should take to complete",
+      "default": "",
+      "_adapt": {
+        "translatable": true
+      },
+      "_backboneForms": {
+        "validators": [
+          ""
+        ]
+      }
+    },
+    "_lockedBy": {
+      "type": "array",
+      "title": "Locked by",
+      "description": "If the course is using a 'custom' Menu Lock Type, this should contain the unique ID of the item(s) which must be completed before this is unlocked",
+      "default": [],
+      "_backboneForms": "List"
+    },
+    "_lockType": {
+      "type": "string",
+      "title": "Menu lock type",
+      "description": "Defines which (if any) locking mechanism will be used. To be used only on submenus.",
+      "default": "",
+      "enum": [
+        "",
+        "custom",
+        "lockLast",
+        "sequential",
+        "unlockFirst"
+      ],
+      "_backboneForms": "Select"
+    },
+    "_classes": {
+      "type": "string",
+      "title": "Page Classes",
+      "description": "Used to style or manipulate the look and feel of this Page (or submenu). These are predefined in the theme or added in Project Settings > Custom CSS/Less code.",
+      "default": "",
+      "_adapt": {
+        "isSetting": true
+      }
+    },
+    "_isOptional": {
+      "type": "boolean",
+      "title": "Is this optional?",
+      "description": "An optional page does not have to be completed, nor do any of the articles, blocks and components contained within it.",
+      "default": false,
+      "_adapt": {
+        "isSetting": true
+      }
+    },
+    "_isAvailable": {
+      "type": "boolean",
+      "title": "Is this available?",
+      "description": "Controls whether this page and its contents are available in the course or not.",
+      "default": true,
+      "_adapt": {
+        "isSetting": true
+      }
+    },
+    "_isHidden": {
+      "type": "boolean",
+      "title": "Is this hidden?",
+      "description": "Hides this page from the course menu. Needs to be supported by the menu you are using in your course.",
+      "default": false,
+      "_adapt": {
+        "isSetting": true
+      }
+    },
+    "_isVisible": {
+      "type": "boolean",
+      "title": "Is this visible?",
+      "description": "Equivalent to the CSS visibility property. Unless you have custom code that uses this, it is highly unlikely you would want to change this setting at a page level.",
+      "default": true,
+      "_adapt": {
+        "isSetting": true
+      }
+    },
+    "_ariaLevel": {
+      "type": "number",
+      "title": "Aria level",
+      "description": "If you need to override the default page ARIA level (as defined in Configuration Settings), set this to any number greater than 0.",
+      "default": 0,
+      "_adapt": {
+        "isSetting": true
+      },
+      "_backboneForms": {
+        "validators": [
+          "number"
+        ]
+      }
+    },
+    "_onScreen": {
+      "type": "object",
+      "title": "On-screen classes",
+      "description": "These settings allow you to attach classes to the page when it is within the browser's viewport; helpful for running CSS-based animations on pages as they scroll into view.",
+      "properties": {
+        "_isEnabled": {
+          "type": "boolean",
+          "title": "Enabled?",
+          "default": false,
+          "_adapt": {
+            "isSetting": true
+          }
+        },
+        "_classes": {
+          "type": "string",
+          "title": "Classes",
+          "description": "The CSS class(es) to add to the page element.",
+          "default": "",
+          "_adapt": {
+            "isSetting": true
+          }
+        },
+        "_percentInviewVertical": {
+          "type": "number",
+          "title": "Percent in view",
+          "description": "Controls what percentage of the page's height needs to be in the viewport in order for the CSS class(es) to be added.",
+          "default": 50,
+          "_adapt": {
+            "isSetting": true
+          },
+          "_backboneForms": {
+            "validators": [
+              "number"
+            ]
+          }
+        }
+      }
+    },
+    "_extensions": {
+      "type": "object",
+      "title": "Extensions",
+      "default": {}
+    },
+    "_sortOrder": {
+      "type": "number",
+      "title": "Sort order",
+      "default": 1,
+      "_adapt": {
+        "editorOnly": true
+      }
+    },
+    "menuSettings": {
+      "type": "object",
+      "title": "Menu settings",
+      "default": {}
+    },
+    "themeSettings": {
+      "type": "object",
+      "title": "Theme settings",
+      "default": {}
+    }
+  }
+}

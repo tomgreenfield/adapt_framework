@@ -1,0 +1,153 @@
+{
+  "$id": "https://www.adaptlearning.org",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "article",
+  "type": "object",
+  "required": [
+    "title"
+  ],
+  "properties": {
+    "title": {
+      "type": "string",
+      "title": "Title",
+      "default": "New Article Title",
+      "_adapt": {
+        "translatable": true
+      }
+    },
+    "displayTitle": {
+      "type": "string",
+      "title": "Display title",
+      "description": "When viewing an article - this is the title that will be displayed on the page",
+      "default": "New Article Title",
+      "_adapt": {
+        "translatable": true
+      },
+      "_backboneForms": "DisplayTitle"
+    },
+    "body": {
+      "type": "string",
+      "title": "Body",
+      "default": "",
+      "_adapt": {
+        "translatable": true
+      },
+      "_backboneForms": "TextArea"
+    },
+    "instruction": {
+      "type": "string",
+      "title": "Instruction text",
+      "default": "",
+      "_adapt": {
+        "translatable": true
+      }
+    },
+    "_classes": {
+      "type": "string",
+      "title": "Classes",
+      "description": "Used to style or manipulate the look and feel of this Article. These are predefined in the theme or added in Project Settings > Custom CSS/Less code.",
+      "default": "",
+      "_adapt": {
+        "isSetting": true
+      }
+    },
+    "_isOptional": {
+      "type": "boolean",
+      "title": "Is this optional?",
+      "description": "An optional article does not have to be completed, nor do any of the blocks and components contained within it.",
+      "default": false,
+      "_adapt": {
+        "isSetting": true
+      }
+    },
+    "_isAvailable": {
+      "type": "boolean",
+      "title": "Is this available?",
+      "description": "Controls whether this article and its contents are available in the course or not.",
+      "default": true,
+      "_adapt": {
+        "isSetting": true
+      }
+    },
+    "_isHidden": {
+      "type": "boolean",
+      "title": "Is this hidden?",
+      "description": "Enabling this is equivalent to applying the CSS 'display:none' to the article.",
+      "default": false,
+      "_adapt": {
+        "isSetting": true
+      }
+    },
+    "_isVisible": {
+      "type": "boolean",
+      "title": "Is this visible?",
+      "description": "Disabling this is equivalent to applying the CSS 'visibility:hidden' to the article.",
+      "default": true,
+      "_adapt": {
+        "isSetting": true
+      }
+    },
+    "_ariaLevel": {
+      "type": "number",
+      "title": "Aria level",
+      "description": "If you need to override the default article ARIA level (as defined in Configuration Settings), set this to any number greater than 0.",
+      "default": 0,
+      "_adapt": {
+        "isSetting": true
+      },
+      "_backboneForms": {
+        "validators": [
+          "number"
+        ]
+      }
+    },
+    "_onScreen": {
+      "type": "object",
+      "title": "On-screen classes",
+      "description": "These settings allow you to attach classes to the article when it is within the browser's viewport; helpful for running CSS-based animations on articles as they scroll into view.",
+      "properties": {
+        "_isEnabled": {
+          "type": "boolean",
+          "title": "Enabled?",
+          "default": false,
+          "_adapt": {
+            "isSetting": true
+          }
+        },
+        "_classes": {
+          "type": "string",
+          "title": "Classes",
+          "description": "The CSS class(es) to add to the article element.",
+          "default": "",
+          "_adapt": {
+            "isSetting": true
+          }
+        },
+        "_percentInviewVertical": {
+          "type": "number",
+          "title": "Percent in view",
+          "description": "Controls what percentage of the article's height needs to be in the viewport in order for the CSS class(es) to be added.",
+          "default": 50,
+          "_adapt": {
+            "isSetting": true
+          },
+          "_backboneForms": {
+            "validators": [
+              "number"
+            ]
+          }
+        }
+      }
+    },
+    "_extensions": {
+      "type": "object",
+      "title": "Extensions",
+      "default": {}
+    },
+    "themeSettings": {
+      "type": "object",
+      "title": "Theme settings",
+      "default": {}
+    }
+  }
+}
