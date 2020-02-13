@@ -338,7 +338,7 @@
     "_buttons": {
       "type": "object",
       "title": "Buttons",
-      "default": "",
+      "default": {},
       "required": [
         "remainingAttemptsText",
         "remainingAttemptText",
