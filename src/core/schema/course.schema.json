@@ -1,9 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "course",
   "type": "object",
-  "required": [
-    "title"
-  ],
   "properties": {
     "heroImage": {
       "type": "string",
@@ -88,6 +86,7 @@
       "type": "object",
       "title": "Start settings",
       "description": "The start settings allow you to control which page is rendered when a course loads, potentially bypassing the menu.",
+      "default": {},
       "properties": {
         "_isEnabled": {
           "type": "boolean",
@@ -102,6 +101,7 @@
           "title": "Start List",
           "items": {
             "type": "object",
+            "default": {},
             "properties": {
               "_id": {
                 "type": "string",
@@ -149,13 +149,12 @@
     "_globals": {
       "type": "object",
       "title": "Globals",
+      "default": {},
       "properties": {
         "_accessibility": {
           "type": "object",
           "title": "Accessibility",
-          "required": [
-            "skipNavigationText"
-          ],
+          "default": {},
           "properties": {
             "skipNavigationText": {
               "type": "string",
@@ -168,6 +167,7 @@
             "_ariaLabels": {
               "type": "object",
               "title": "ARIA labels",
+              "default": {},
               "properties": {
                 "answeredIncorrectly": {
                   "type": "string",
@@ -339,19 +339,11 @@
       "type": "object",
       "title": "Buttons",
       "default": {},
-      "required": [
-        "remainingAttemptsText",
-        "remainingAttemptText",
-        "disabledAriaLabel"
-      ],
       "properties": {
         "_submit": {
           "type": "object",
           "title": "Submit",
-          "required": [
-            "buttonText",
-            "ariaLabel"
-          ],
+          "default": {},
           "properties": {
             "buttonText": {
               "type": "string",
@@ -374,10 +366,7 @@
         "_reset": {
           "type": "object",
           "title": "Reset",
-          "required": [
-            "buttonText",
-            "ariaLabel"
-          ],
+          "default": {},
           "properties": {
             "buttonText": {
               "type": "string",
@@ -400,10 +389,7 @@
         "_showCorrectAnswer": {
           "type": "object",
           "title": "Show correct answer",
-          "required": [
-            "buttonText",
-            "ariaLabel"
-          ],
+          "default": {},
           "properties": {
             "buttonText": {
               "type": "string",
@@ -426,10 +412,7 @@
         "_hideCorrectAnswer": {
           "type": "object",
           "title": "Hide correct answer",
-          "required": [
-            "buttonText",
-            "ariaLabel"
-          ],
+          "default": {},
           "properties": {
             "buttonText": {
               "type": "string",
@@ -452,10 +435,7 @@
         "_showFeedback": {
           "type": "object",
           "title": "Show feedback",
-          "required": [
-            "buttonText",
-            "ariaLabel"
-          ],
+          "default": {},
           "properties": {
             "buttonText": {
               "type": "string",

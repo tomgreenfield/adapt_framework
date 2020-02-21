@@ -1,9 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "block",
   "type": "object",
-  "required": [
-    "title"
-  ],
   "properties": {
     "_trackingId": {
       "type": "number",
@@ -116,6 +114,7 @@
       "type": "object",
       "title": "On-screen classes",
       "description": "These settings allow you to attach classes to the block when it is within the browser's viewport; helpful for running CSS-based animations on blocks as they scroll into view.",
+      "default": {},
       "properties": {
         "_isEnabled": {
           "type": "boolean",

@@ -1,11 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "config",
   "type": "object",
-  "required": [
-    "_defaultLanguage",
-    "_defaultDirection",
-    "_questionWeight"
-  ],
   "properties": {
     "_extensions": {
       "type": "object",
@@ -28,12 +24,14 @@
       "default": "adapt-contrib-boxMenu"
     },
     "_courseId": {
-      "type": "objectid",
+      "type": "string",
+      "isObjectId": true,
       "title": "Course id"
     },
     "_completionCriteria": {
       "type": "object",
       "title": "Completion criteria",
+      "default": {},
       "properties": {
         "_requireContentCompleted": {
           "type": "boolean",
@@ -67,6 +65,7 @@
     "_accessibility": {
       "type": "object",
       "title": "Accessibility",
+      "default": {},
       "properties": {
         "_isEnabled": {
           "type": "boolean",
@@ -89,16 +88,7 @@
           "type": "object",
           "title": "ARIA Levels",
           "description": "Defines what value to assign to the aria-level attribute for the various elements of Adapt",
-          "required": [
-            "_menu",
-            "_menuItem",
-            "_page",
-            "_article",
-            "_block",
-            "_component",
-            "_componentItem",
-            "_notify"
-          ],
+          "default": {},
           "properties": {
             "_menu": {
               "type": "number",
@@ -197,11 +187,7 @@
     "screenSize": {
       "type": "object",
       "title": "Screen Size",
-      "required": [
-        "small",
-        "medium",
-        "large"
-      ],
+      "default": {},
       "properties": {
         "small": {
           "type": "number",
@@ -254,11 +240,7 @@
     "_drawer": {
       "type": "object",
       "title": "Drawer",
-      "required": [
-        "_showEasing",
-        "_hideEasing",
-        "_duration"
-      ],
+      "default": {},
       "properties": {
         "_showEasing": {
           "type": "string",
@@ -382,6 +364,7 @@
     "_logging": {
       "type": "object",
       "title": "Logging",
+      "default": {},
       "properties": {
         "_isEnabled": {
           "type": "boolean",
@@ -411,6 +394,7 @@
     "_scrollingContainer": {
       "type": "object",
       "title": "iFrame and Screen Reader scrolling support",
+      "default": {},
       "properties": {
         "_isEnabled": {
           "type": "boolean",
@@ -431,7 +415,8 @@
       "default": {}
     },
     "_themePreset": {
-      "type": "objectid",
+      "type": "string",
+      "isObjectId": true,
       "title": "Theme preset"
     }
   }

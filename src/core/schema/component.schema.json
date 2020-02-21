@@ -1,12 +1,11 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "component",
   "type": "object",
-  "required": [
-    "title"
-  ],
   "properties": {
     "_componentType": {
-      "type": "objectid",
+      "type": "string",
+      "isObjectId": true,
       "title": "Component type",
       "_adapt": {
         "editorOnly": true
@@ -102,11 +101,13 @@
       }
     },
     "_parentId": {
-      "type": "objectid",
+      "type": "string",
+      "isObjectId": true,
       "title": "Parent id"
     },
     "_courseId": {
-      "type": "objectid",
+      "type": "string",
+      "isObjectId": true,
       "title": "Course id",
       "_adapt": {
         "editorOnly": true
@@ -143,6 +144,7 @@
       "type": "object",
       "title": "On-screen classes",
       "description": "These settings allow you to attach classes to the component when it is within the browser's viewport; helpful for running CSS-based animations on components as they scroll into view.",
+      "default": {},
       "properties": {
         "_isEnabled": {
           "type": "boolean",
