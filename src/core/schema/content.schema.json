@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "content",
+  "type": "object",
+  "properties": {
+    "_type": {
+      "type": "string",
+      "title": "Type",
+      "default": "",
+      "_unrecognisedFields": {
+        "id": "http://jsonschema.net/_type"
+      }
+    },
+    "_layout": {
+      "type": "string",
+      "title": "Layout",
+      "default": ""
+    },
+    "_classes": {
+      "type": "string",
+      "title": "Classes",
+      "description": "Used to style or manipulate the look and feel of this Component. These are predefined in the theme or added in Project Settings > Custom CSS/Less code.",
+      "default": "",
+      "_adapt": {
+        "isSetting": true
+      }
+    },
+    "_isOptional": {
+      "type": "boolean",
+      "title": "Is this optional?",
+      "description": "An optional component does not have to be completed by the user.",
+      "default": false,
+      "_adapt": {
+        "isSetting": true
+      }
+    },
+    "_isAvailable": {
+      "type": "boolean",
+      "title": "Is this available?",
+      "description": "Controls whether this component is available in the course or not.",
+      "default": true,
+      "_adapt": {
+        "isSetting": true
+      }
+    },
+    "_isHidden": {
+      "type": "boolean",
+      "title": "Is this hidden?",
+      "description": "Enabling this is equivalent to applying the CSS 'display:none' to the component.",
+      "default": false,
+      "_adapt": {
+        "isSetting": true
+      }
+    },
+    "_isVisible": {
+      "type": "boolean",
+      "title": "Is this visible?",
+      "description": "Disabling this is equivalent to applying the CSS 'visibility:hidden' to the component.",
+      "default": true,
+      "_adapt": {
+        "isSetting": true
+      }
+    },
+    "_ariaLevel": {
+      "type": "number",
+      "title": "Aria level",
+      "description": "If you need to override the default component ARIA level (as defined in Configuration Settings), set this to any number greater than 0.",
+      "default": 0,
+      "_adapt": {
+        "isSetting": true
+      },
+      "_backboneForms": {
+        "validators": [
+          "number"
+        ]
+      }
+    },
+    "_parentId": {
+      "type": "string",
+      "isObjectId": true,
+      "title": "Parent id"
+    },
+    "_courseId": {
+      "type": "string",
+      "isObjectId": true,
+      "title": "Course id",
+      "_adapt": {
+        "editorOnly": true
+      }
+    },
+    "title": {
+      "type": "string",
+      "title": "Title",
+      "default": "New Component Title",
+      "_adapt": {
+        "translatable": true
+      }
+    },
+    "displayTitle": {
+      "type": "string",
+      "title": "Display title",
+      "description": "When viewing a component - this is the title that will be displayed",
+      "default": "New Component Title",
+      "_adapt": {
+        "translatable": true
+      },
+      "_backboneForms": "DisplayTitle"
+    },
+    "body": {
+      "type": "string",
+      "title": "Body",
+      "default": "",
+      "_adapt": {
+        "translatable": true
+      },
+      "_backboneForms": "TextArea"
+    }
+  }
+}
