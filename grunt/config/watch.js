@@ -17,8 +17,8 @@ module.exports = {
     tasks: ['handlebars', 'javascript:dev']
   },
   courseJson: {
-    files: ['<%= sourcedir %>course/**/*.<%= jsonext %>'],
-    tasks: ['jsonlint', 'check-json', 'newer:copy:courseJson', 'schema-defaults', 'create-json-config']
+    files: ['<%= sourcedir %>course/**/*.<%= jsonext %>', '<%= outputdir %>course/*/language_data_manifest.js'],
+    tasks: ['language-data-manifests', 'jsonlint', 'check-json', 'newer:copy:courseJson', 'schema-defaults']
   },
   courseAssets: {
     files: ['<%= sourcedir %>course/<%=languages%>/*', '!<%= sourcedir %>course/<%=languages%>/*.<%= jsonext %>'],
@@ -26,7 +26,7 @@ module.exports = {
   },
   js: {
     files: ['<%= sourcedir %>**/*.js'],
-    tasks: ['javascript:dev']
+    tasks: ['javascript:dev', 'babel:dev', 'clean:temp']
   },
   componentsAssets: {
     files: ['<%= sourcedir %>components/**/assets/**'],
@@ -61,11 +61,11 @@ module.exports = {
     tasks: ['newer:copy:themeFonts']
   },
   libraries: {
-    files: ['<%= sourcedir %>core/libraries/**/*','<%= sourcedir %>*/*/libraries/**/*'],
+    files: ['<%= sourcedir %>core/libraries/**/*', '<%= sourcedir %>*/*/libraries/**/*'],
     tasks: ['newer:copy:libraries']
   },
   required: {
-    files: ['<%= sourcedir %>core/required/**/*','<%= sourcedir %>*/*/required/**/*'],
+    files: ['<%= sourcedir %>core/required/**/*', '<%= sourcedir %>*/*/required/**/*'],
     tasks: ['newer:copy:required']
   }
-}
+};

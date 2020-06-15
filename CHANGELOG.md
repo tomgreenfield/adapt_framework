@@ -1,3 +1,74 @@
+## [5.5.1] - 2020-06-08
+### Fixed
+* Backward compatibility for view-only components ([#2787](https://github.com/adaptlearning/adapt_framework/issues/2787))
+
+
+## [5.5.0] - 2020-05-18
+#### Added
+* `none` helper ([#2764](https://github.com/adaptlearning/adapt_framework/issues/2764))
+* Data manifests ([#2645](https://github.com/adaptlearning/adapt_framework/issues/2645))
+* `Adapt.store` to decouple the core models and views ([#2714](https://github.com/adaptlearning/adapt_framework/issues/2714))
+
+#### Changed
+* Simplified router ([#2712](https://github.com/adaptlearning/adapt_framework/issues/2712))
+* Converted a lot more of the core to ES6-8 ([#2709](https://github.com/adaptlearning/adapt_framework/issues/2709))
+
+For a more detailed overview of the changes see ([#2711](https://github.com/adaptlearning/adapt_framework/pull/2711))
+
+
+## [5.4.0] - 2020-05-12
+### Added
+- Adapt events `template:preRender`, `template:postRender`, `partial:preRender`, `partial:postRender` ([#2734](https://github.com/adaptlearning/adapt_framework/issues/2734))
+- Img tag loading fix ([#2734](https://github.com/adaptlearning/adapt_framework/issues/2734))
+
+### Changed
+- Updated jQuery to v3.5.0 ([#2725](https://github.com/adaptlearning/adapt_framework/issues/2725))
+- Improved `grunt translate:import` task ([#2736](https://github.com/adaptlearning/adapt_framework/issues/2736))
+
+### Fixed
+- The settings `_isResetOnRevisit` and `_requireCompletionOf` were not available in the AAT ([#1912](https://github.com/adaptlearning/adapt_framework/issues/1912) & [#2639](https://github.com/adaptlearning/adapt_framework/issues/2639))
+- Arrow function and async/await debugging ([#2733](https://github.com/adaptlearning/adapt_framework/issues/2733))
+- Not all course content being exported by the `grunt translate` task ([#2721](https://github.com/adaptlearning/adapt_framework/issues/2721))
+
+
+## [5.3.0] - 2020-03-26
+### Added
+- `Adapt.log.removed` and `Adapt.log.deprecated` ([#2678](https://github.com/adaptlearning/adapt_framework/issues/2678))
+- ES6-8 support ([#2647](https://github.com/adaptlearning/adapt_framework/issues/2647))
+- ES6 class static inheritance to `Backbone` ([#2697](https://github.com/adaptlearning/adapt_framework/issues/2697))
+
+### Changed
+- Exposed router controller at `Adapt.router` ([#2677](https://github.com/adaptlearning/adapt_framework/issues/2677))
+- Moved navigation button event handlers to `NavigationView` ([#2669](https://github.com/adaptlearning/adapt_framework/issues/2669))
+- Converted some models, views and controllers to ES6 ([#2647](https://github.com/adaptlearning/adapt_framework/issues/2647))
+- `CourseModel` now inherits from `MenuModel` ([#2647](https://github.com/adaptlearning/adapt_framework/pull/2648#issuecomment-595824424))
+- Formalized plugin, data, schema and translate API ([#2662](https://github.com/adaptlearning/adapt_framework/issues/2662))
+- Refreshed existing and added new icons to the vanilla font set ([#2688](https://github.com/adaptlearning/adapt_framework/issues/2688))
+
+
+## [5.2.0] - 2020-03-09
+### Added
+- Code 'linting' support via ESLint ([#2377](https://github.com/adaptlearning/adapt_framework/issues/2377))
+- 'Return to start location' feature to Start Controller ([#2541](https://github.com/adaptlearning/adapt_framework/issues/2541))
+- Event bubbling for the `change:_isActive` event ([#2649](https://github.com/adaptlearning/adapt_framework/issues/2649))
+- Component padding LESS variable ([#2676](https://github.com/adaptlearning/adapt_framework/issues/2676))
+
+### Changed
+- Drawer scrolling behaviour for better support for long lists of items ([#2498](https://github.com/adaptlearning/adapt_framework/issues/2498))
+
+### Fixed
+- Locking checks were not being performed on contentObjects that are descendants of contentObjects ([#2469](https://github.com/adaptlearning/adapt_framework/issues/2469))
+- Page Level Progress indicators disrupting container outlines in Firefox ([#2619](https://github.com/adaptlearning/adapt_framework/issues/2619))
+- `imageReady` error in IE 11 when SVG images used ([#2625](https://github.com/adaptlearning/adapt_framework/issues/2625))
+- visual bug with questions with marking but no feedback ([#2627](https://github.com/adaptlearning/adapt_framework/issues/2627))
+- Notify 'push' styles missing ([#2640](https://github.com/adaptlearning/adapt_framework/issues/2640))
+- Error 'tslib not found' preventing LESS from being compiled ([#2642](https://github.com/adaptlearning/adapt_framework/issues/2642))
+- Menu item titles not being read out by assistive technology ([#2680](https://github.com/adaptlearning/adapt_framework/issues/2680))
+
+### Removed
+- Grunt task `create-json-config` - it isn't needed any more ([#2660](https://github.com/adaptlearning/adapt_framework/issues/2660))
+
+
 ## [5.1.0] - 2019-12-11
 ### Added
 - Classes to question components to indicate when the settings 'show model answer', 'show feedback' or 'show marking' are enabled ([#2606](https://github.com/adaptlearning/adapt_framework/issues/2606))
@@ -305,7 +376,7 @@ Last version to include new features for legacy browsers, i.e. Internet Explorer
   - fixes cache issues in Firefox and Chrome
   - stops it from waiting for missing images
   - now correctly reports timed-out images
-  - fetches background images when no `<img>` tags are present 
+  - fetches background images when no `<img>` tags are present
 
 ### Fixed
 - `adapt:initialize` being called before plugins have chance to complete aysnc ops during `app:dataReady` ([#1536](https://github.com/adaptlearning/adapt_framework/issues/1536))
@@ -320,9 +391,9 @@ Last version to include new features for legacy browsers, i.e. Internet Explorer
 
 ### Changed
 - Moved navigation bar outside of the `.wrapper` div in preparation for improvements to behaviour of Adapt inside iframes/framesets on iOS ([#1521](https://github.com/adaptlearning/adapt_framework/issues/1521))
-- Link in course body so that it reads 'Find out more here' instead of showing the underlying URL ([#1477](https://github.com/adaptlearning/adapt_framework/issues/1477)) 
+- Link in course body so that it reads 'Find out more here' instead of showing the underlying URL ([#1477](https://github.com/adaptlearning/adapt_framework/issues/1477))
 - Amended `adaptModel.setupChildListeners` to listen only to immediate children ([#695](https://github.com/adaptlearning/adapt_framework/issues/695))
-- Set accessibility to be disabled on 'touch' devices by default; added a new config setting - `_accessibility._isEnabledOnTouchDevices` - to allow it to be enabled when required ([#1519](https://github.com/adaptlearning/adapt_framework/issues/1519)) 
+- Set accessibility to be disabled on 'touch' devices by default; added a new config setting - `_accessibility._isEnabledOnTouchDevices` - to allow it to be enabled when required ([#1519](https://github.com/adaptlearning/adapt_framework/issues/1519))
 
 ## [2.0.19] - 2017-04-10
 
@@ -465,7 +536,7 @@ Last version to include new features for legacy browsers, i.e. Internet Explorer
 
 ### Changed
 - enhancement-967: questionView model code > questionModel ([#981](https://github.com/adaptlearning/adapt_framework/pull/981))
-- change issues link from Jira to Github 
+- change issues link from Jira to Github
 
 ### Fixed
 - issue-1047: downgrade less library ([#1047](https://github.com/adaptlearning/adapt_framework/pull/1047))
@@ -474,7 +545,7 @@ Last version to include new features for legacy browsers, i.e. Internet Explorer
 ## [2.0.9] - 2016-03-27
 
 ### Added
-- new 'locking' feature enables course authors to lock parts of the course until other parts have been completed ([#905](https://github.com/adaptlearning/adapt_framework/issues/905)). Documentation for this feature can be found [here](https://github.com/adaptlearning/adapt_framework/wiki/Locking-objects-with-'_isLocked'-and-'_lockType'). Note that locking needs to be supported in the menu plugin you are using - support for this has been added to adapt-contrib-boxmenu in [v2.0.4](https://github.com/adaptlearning/adapt-contrib-boxmenu/releases/tag/v2.0.4) 
+- new 'locking' feature enables course authors to lock parts of the course until other parts have been completed ([#905](https://github.com/adaptlearning/adapt_framework/issues/905)). Documentation for this feature can be found [here](https://github.com/adaptlearning/adapt_framework/wiki/Locking-objects-with-'_isLocked'-and-'_lockType'). Note that locking needs to be supported in the menu plugin you are using - support for this has been added to adapt-contrib-boxmenu in [v2.0.4](https://github.com/adaptlearning/adapt-contrib-boxmenu/releases/tag/v2.0.4)
 - new 'notify:cancelled' event added ([#1009](https://github.com/adaptlearning/adapt_framework/issues/1009))
 
 ### Changed
@@ -487,7 +558,7 @@ Last version to include new features for legacy browsers, i.e. Internet Explorer
 ### Fixed
 - Leaving out the `_classes` property would cause a class of "undefined" to be added to the class list ([#804](https://github.com/adaptlearning/adapt_framework/issues/804))
 - Intermittent error in the Grunt 'replace' tasks for authoring tool users ([#1021](https://github.com/adaptlearning/adapt_framework/issues/1021))
-- Temporary workaround for some LESS variables not being defined in the core theme ([#1006](https://github.com/adaptlearning/adapt_framework/issues/1006)) 
+- Temporary workaround for some LESS variables not being defined in the core theme ([#1006](https://github.com/adaptlearning/adapt_framework/issues/1006))
 
 ## [2.0.8] - 2016-03-21
 
@@ -798,6 +869,11 @@ The initial version of the Adapt framework.
 ### Added
 - Everything!
 
+[5.5.1]: https://github.com/adaptlearning/adapt_framework/compare/v5.5.0...v5.5.1
+[5.5.0]: https://github.com/adaptlearning/adapt_framework/compare/v5.4.0...v5.5.0
+[5.4.0]: https://github.com/adaptlearning/adapt_framework/compare/v5.3.0...v5.4.0
+[5.3.0]: https://github.com/adaptlearning/adapt_framework/compare/v5.2.0...v5.3.0
+[5.2.0]: https://github.com/adaptlearning/adapt_framework/compare/v5.1.0...v5.2.0
 [5.1.0]: https://github.com/adaptlearning/adapt_framework/compare/v5.0.0...v5.1.0
 [5.0.0]: https://github.com/adaptlearning/adapt_framework/compare/v4.4.1...v5.0.0
 [4.4.1]: https://github.com/adaptlearning/adapt_framework/compare/v4.4.0...v4.4.1

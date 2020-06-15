@@ -1,33 +1,42 @@
 define([
   'core/js/adapt',
-  'core/js/models/adaptModel'
-], function (Adapt, AdaptModel) {
+  'core/js/models/menuModel'
+], function (Adapt, MenuModel) {
 
-  var CourseModel = AdaptModel.extend({
+  class CourseModel extends MenuModel {
 
-    initialize: function(attrs, options) {
-      AdaptModel.prototype.initialize.apply(this, arguments);
+    get _parent() {
+      Adapt.log.deprecated('courseModel._parent, use courseModel.getParent() instead, parent models are defined by the JSON');
+      return null;
+    }
+
+    get _siblings() {
+      Adapt.log.deprecated('courseModel._siblings, use courseModel.getSiblings() instead, sibling models are defined by the JSON');
+      return null;
+    }
+
+    /**
+     * Returns a string of the model type group.
+     * @returns {string}
+     */
+    getTypeGroup() {
+      return 'course';
+    }
+
+    initialize(...args) {
       Adapt.trigger('courseModel:dataLoading');
+      super.initialize(...args);
+      this.loadedData();
+    }
 
-      this.url = options.url;
-
-      this.on('sync', this.loadedData, this);
-      if (this.url) {
-        this.fetch({
-          error: _.bind(function(model, xhr, options) {
-            console.error("ERROR: unable to load file " + this.url);
-          }, this)
-        });
-      }
-    },
-
-    loadedData: function() {
+    loadedData() {
+      Adapt.course = this;
       Adapt.trigger('courseModel:dataLoaded');
-    },
+    }
 
-    _children: "contentObjects"
+  }
 
-  });
+  Adapt.register('course', { model: CourseModel });
 
   return CourseModel;
 

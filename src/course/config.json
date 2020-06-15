@@ -5,7 +5,8 @@
     "_logging": {
         "_isEnabled": true,
         "_level": "debug",
-        "_console": true
+        "_console": true,
+        "_warnFirstOnly": true
     },
     "_accessibility": {
         "_isEnabled": true,
@@ -36,6 +37,9 @@
             "_warnFirstOnly": true
         }
     },
+    "_fixes": {
+        "_imgLazyLoad": true
+    },
     "_drawer": {
         "_showEasing": "easeOutQuart",
         "_hideEasing": "easeInQuart",
@@ -49,7 +53,7 @@
         "_isEnabled": true,
         "_tracking": {
             "_shouldSubmitScore": true,
-            "_shouldStoreResponses": false,
+            "_shouldStoreResponses": true,
             "_shouldRecordInteractions": true
         },
         "_reporting": {

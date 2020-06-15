@@ -8,12 +8,14 @@ module.exports = function(grunt) {
     'build-config',
     'copy',
     'schema-defaults',
+    'language-data-manifests',
     'newer:handlebars:compile',
-    'create-json-config',
     'tracking-insert',
     'newer:javascript:dev',
+    'babel:dev',
     'newer:less:dev',
     'replace',
-    'scripts:adaptpostbuild'
+    'scripts:adaptpostbuild',
+    'clean:temp'
   ]);
 };

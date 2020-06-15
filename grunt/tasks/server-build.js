@@ -9,11 +9,14 @@ module.exports = function(grunt) {
       '_log-vars',
       'build-config',
       'copy',
+      'language-data-manifests',
       'less:' + requireMode,
       'handlebars',
       'javascript:' + requireMode,
+      'babel:' + requireMode,
       'replace',
-      'scripts:adaptpostbuild'
+      'scripts:adaptpostbuild',
+      'clean:temp'
     ]);
   });
 };

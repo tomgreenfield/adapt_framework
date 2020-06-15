@@ -9,14 +9,16 @@ module.exports = function(grunt) {
     'build-config',
     'copy',
     'schema-defaults',
+    'language-data-manifests',
     'handlebars',
-    'create-json-config',
     'tracking-insert',
     'javascript:compile',
+    'babel:compile',
     'clean:dist',
     'less:compile',
     'replace',
     'scripts:adaptpostbuild',
+    'clean:temp',
     'minify'
   ]);
 };

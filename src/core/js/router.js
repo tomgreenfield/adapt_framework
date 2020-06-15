@@ -1,58 +1,83 @@
 define([
   'core/js/adapt',
   'core/js/models/routerModel',
-  'core/js/views/pageView',
+  'core/js/models/courseModel',
+  'core/js/models/contentObjectModel',
+  'core/js/models/menuModel',
   'core/js/startController'
-], function(Adapt, RouterModel, PageView) {
+], function(Adapt, RouterModel, CourseModel, ContentObjectModel, MenuModel) {
 
-  Adapt.router = new RouterModel(null, { reset: true });
+  class Router extends Backbone.Router {
 
-  var Router = Backbone.Router.extend({
+    routes() {
+      return {
+        '': 'handleRoute',
+        'id/:id': 'handleRoute',
+        ':pluginName(/*location)(/*action)': 'handleRoute'
+      };
+    }
 
-    // Flag to indicate if the router has tried to redirect to the current location.
-    _isCircularNavigationInProgress: false,
-
-    initialize: function() {
+    initialize({ model }) {
+      this.model = model;
+      this._navigationRoot = null;
+      // Flag to indicate if the router has tried to redirect to the current location.
+      this._isCircularNavigationInProgress = false;
       this.showLoading();
-
       // Store #wrapper element and html to cache for later use.
       this.$wrapper = $('#wrapper');
       this.$html = $('html');
+      this.listenToOnce(Adapt, 'app:dataReady', this.setDocumentTitle);
+      this.listenTo(Adapt, 'router:navigateTo', this.navigateToArguments);
+    }
 
-      Adapt.once('app:dataReady', function() {
-        document.title = Adapt.course.get('title');
+    get rootModel() {
+      return this._navigationRoot || Adapt.course;
+    }
+
+    set rootModel(model) {
+      this._navigationRoot = model;
+    }
+
+    showLoading() {
+      $('.js-loading').show();
+    }
+
+    hideLoading() {
+      $('.js-loading').hide();
+    }
+
+    setDocumentTitle() {
+      const currentModel = Adapt.location._currentModel;
+      const hasSubTitle = (currentModel && currentModel !== Adapt.router.rootModel && currentModel.get('title'));
+      const title = [
+        this.rootModel.get('title'),
+        hasSubTitle && currentModel.get('title')
+      ].filter(Boolean).join(' | ');
+      this.listenToOnce(Adapt, 'contentObjectView:preRender', () => {
+        const escapedTitle = $(`<div>${title}</div>`).text();
+        document.title = escapedTitle;
       });
+    }
 
-      this.listenTo(Adapt, {
-        'navigation:backButton': this.navigateToPreviousRoute,
-        'navigation:homeButton': this.navigateToHomeRoute,
-        'navigation:skipNavigation': this.skipNavigation,
-        'navigation:parentButton': this.navigateToParent,
-        'router:navigateTo': this.navigateToArguments
-      });
-    },
-
-    routes: {
-      '': 'handleRoute',
-      'id/:id': 'handleRoute',
-      ':pluginName(/*location)(/*action)': 'handleRoute'
-    },
-
-    pruneArguments: function(args) {
-      var prunedArgs = _.toArray(args);
-
-      if (prunedArgs.length !== 0) {
-        // Remove any null arguments.
-        prunedArgs = _.without(args, null);
+    navigateToArguments(args) {
+      args = args.filter(v => v !== null);
+      const options = { trigger: false, replace: false };
+      if (args.length === 1 && Adapt.findById(args[0])) {
+        this.navigate('#/id/' + args[0], options);
+        return;
       }
+      if (args.length <= 3) {
+        this.navigate('#/' + args.join('/'), options);
+        return;
+      }
+      Adapt.log.deprecated(`Use Backbone.history.navigate or window.location.href instead of Adapt.trigger('router:navigateTo')`);
+      this.handleRoute(...args);
+    }
 
-      return prunedArgs;
-    },
+    handleRoute(...args) {
+      args = args.filter(v => v !== null);
 
-    handleRoute: function() {
-      var args = this.pruneArguments(arguments);
-
-      if (Adapt.router.get('_canNavigate')) {
+      if (this.model.get('_canNavigate')) {
         // Reset _isCircularNavigationInProgress protection as code is allowed to navigate away.
         this._isCircularNavigationInProgress = false;
       }
@@ -65,21 +90,13 @@ define([
       }
 
       // Re-check as _canNavigate can be set to false on 'router:navigate' event.
-      if (Adapt.router.get('_canNavigate')) {
+      if (this.model.get('_canNavigate')) {
         // Disable navigation whilst rendering.
-        Adapt.router.set('_canNavigate', false, { pluginName: 'adapt' });
-
-        switch (args.length) {
-          case 1:
-            // If only one parameter assume it's the ID.
-            return this.handleId.apply(this, args);
-          case 2:
-            // If there are two parameters assume it's a plugin.
-            return this.handlePluginRouter.apply(this, args);
-          default:
-            // Route to course home page.
-            return this.handleCourse();
+        this.model.set('_canNavigate', false, { pluginName: 'adapt' });
+        if (args.length <= 1) {
+          return this.handleId(...args);
         }
+        return this.handlePluginRouter(...args);
       }
 
       if (this._isCircularNavigationInProgress) {
@@ -96,297 +113,262 @@ define([
 
       // Reset URL to the current one.
       this.navigateToCurrentRoute(true);
-    },
+    }
 
-    handlePluginRouter: function(pluginName, location, action) {
-      var pluginLocation = pluginName;
+    async handlePluginRouter(pluginName, location, action) {
+      const pluginLocation = [
+        pluginName,
+        location && `-${location}`,
+        action && `-${action}`
+      ].filter(Boolean).join('');
+      await this.updateLocation(pluginLocation, null, null, null);
 
-      if (location) {
-        pluginLocation = pluginLocation + '-' +location;
+      Adapt.trigger('router:plugin:' + pluginName, pluginName, location, action);
+      Adapt.trigger('router:plugin', pluginName, location, action);
+      this.model.set('_canNavigate', true, { pluginName: 'adapt' });
+    }
 
-        if (action) {
-          pluginLocation = pluginLocation + '-' + action;
-        }
-      }
+    async handleId(id) {
+      const rootModel = Adapt.router.rootModel;
+      const model = (!id) ? rootModel : Adapt.findById(id);
 
-      this.updateLocation(pluginLocation, null, null, function() {
-        Adapt.trigger('router:plugin:' + pluginName, pluginName, location, action);
-        Adapt.trigger('router:plugin', pluginName, location, action);
-
-        Adapt.router.set('_canNavigate', true, { pluginName: 'adapt' });
-      });
-    },
-
-    handleCourse: function() {
-      if (Adapt.course.has('_start')) {
-        // Do not allow access to the menu when the start controller is enabled.
-        var startController = Adapt.course.get('_start');
-
-        if (startController._isEnabled == true && startController._isMenuDisabled == true) {
-          return;
-        }
-      }
-
-      this.showLoading();
-
-      this.removeViews(_.bind(function() {
-        Adapt.course.set('_isReady', false);
-
-        this.setContentObjectToVisited(Adapt.course);
-
-        this.updateLocation('course', null, null, _.bind(function() {
-          Adapt.once('menuView:ready', function() {
-            // Allow navigation.
-            Adapt.router.set('_canNavigate', true, { pluginName: 'adapt' });
-            this.handleNavigationFocus();
-          }.bind(this));
-
-          Adapt.trigger('router:menu', Adapt.course);
-        }, this));
-      }, this));
-    },
-
-    handleId: function(id) {
-      var currentModel = Adapt.findById(id);
-      var type = '';
-
-      if (!currentModel) {
-        Adapt.router.set('_canNavigate', true, { pluginName: 'adapt' });
+      if (!model) {
+        // Bad id
+        this.model.set('_canNavigate', true, { pluginName: 'adapt' });
         return;
       }
 
-      type = currentModel.get('_type');
+      id = model.get('_id');
 
-      switch (type) {
-        case 'page':
-        case 'menu':
-          if (currentModel.get('_isLocked') && Adapt.config.get('_forceRouteLocking')) {
-            Adapt.log.warn('Unable to navigate to locked id: ' + id);
-            Adapt.router.set('_canNavigate', true, {pluginName: 'adapt'});
-            if (Adapt.location._previousId === undefined) {
-              return this.navigate('#/', { trigger: true, replace: true });
-            } else {
-              return Backbone.history.history.back();
-            }
-          } else {
-            this.showLoading();
-            this.removeViews(_.bind(function() {
-
-              this.setContentObjectToVisited(currentModel);
-
-              if (type == 'page') {
-                var location = 'page-' + id;
-                this.updateLocation(location, 'page', id, _.bind(function() {
-                  Adapt.once('pageView:ready', function() {
-                    // Allow navigation.
-                    Adapt.router.set('_canNavigate', true, { pluginName: 'adapt' });
-                    this.handleNavigationFocus();
-                  }.bind(this));
-                  Adapt.trigger('router:page', currentModel);
-                  this.$wrapper.append(new PageView({ model: currentModel }).$el);
-                }, this));
-              } else {
-                var location = 'menu-' + id;
-                this.updateLocation(location, 'menu', id, _.bind(function() {
-                  Adapt.once('menuView:ready', function() {
-                    // Allow navigation.
-                    Adapt.router.set('_canNavigate', true, { pluginName: 'adapt' });
-                    this.handleNavigationFocus();
-                  }.bind(this));
-                  Adapt.trigger('router:menu', currentModel);
-                }, this));
-              }
-            }, this));
-          }
-          break;
-        default:
-          // Allow navigation.
-          Adapt.router.set('_canNavigate', true, { pluginName: 'adapt' });
-          Adapt.navigateToElement('.' + id, { replace: true });
+      const isContentObject = (model instanceof ContentObjectModel);
+      if (!isContentObject) {
+        // Allow navigation.
+        this.model.set('_canNavigate', true, { pluginName: 'adapt' });
+        // Scroll to element
+        Adapt.navigateToElement('.' + id, { replace: true });
+        return;
       }
-    },
 
-    removeViews: function(onComplete) {
-      Adapt.remove();
-
-      Adapt.wait.queue(onComplete);
-    },
-
-    showLoading: function() {
-      $('.js-loading').show();
-    },
-
-    navigateToArguments: function(args) {
-      args = this.pruneArguments(args);
-
-      var options = { trigger: false, replace: false };
-
-      switch (args.length) {
-        case 0:
-          this.navigate('#/', options);
-          break;
-        case 1:
-          if (Adapt.findById(args[0])) {
-            this.navigate('#/id/' + args[0], options);
-          } else {
-            this.navigate('#/' + args[0], options);
-          }
-          break;
-        case 2:
-        case 3:
-          this.navigate('#/' + args.join('/'), options);
-          break;
-        default:
-          Adapt.log.warn('DEPRECATED - use Backbone.history.navigate or ' +
-            'window.location.href instead of Adapt.trigger("router:navigateTo")');
-          this.handleRoute.apply(this, args);
-      }
-    },
-
-    skipNavigation: function() {
-      Adapt.a11y.focusFirst('.' + Adapt.location._contentType);
-    },
-
-    navigateToPreviousRoute: function(force) {
-      // Sometimes a plugin might want to stop the default navigation.
-      // Check whether default navigation has changed.
-      if (Adapt.router.get('_canNavigate') || force) {
-        if (!Adapt.location._currentId) {
-          return Backbone.history.history.back();
-        }
-        if (Adapt.location._previousContentType === 'page' && Adapt.location._contentType === 'menu') {
-          return this.navigateToParent();
-        }
-        if (Adapt.location._previousContentType === 'page') {
-          return Backbone.history.history.back();
-        }
-        if (Adapt.location._currentLocation === 'course') {
+      const isRoot = (model === rootModel);
+      if (isRoot && Adapt.course.has('_start')) {
+        // Do not allow access to the menu when the start controller is enabled.
+        var startController = Adapt.course.get('_start');
+        if (startController._isEnabled === true && startController._isMenuDisabled === true) {
           return;
         }
-        this.navigateToParent();
       }
-    },
 
-    navigateToHomeRoute: function(force) {
-      if (Adapt.router.get('_canNavigate') || force ) {
-        this.navigate('#/', { trigger: true });
-      }
-    },
-
-    navigateToCurrentRoute: function(force) {
-      if (Adapt.router.get('_canNavigate') || force) {
-        if (!Adapt.location._currentId) {
-          return;
+      if (model.get('_isLocked') && Adapt.config.get('_forceRouteLocking')) {
+        // Locked id
+        Adapt.log.warn('Unable to navigate to locked id: ' + id);
+        this.model.set('_canNavigate', true, { pluginName: 'adapt' });
+        if (Adapt.location._previousId === undefined) {
+          return this.navigate('#/', { trigger: true, replace: true });
         }
-        var currentId = Adapt.location._currentId;
-        var route = (currentId === Adapt.course.get('_id')) ? '#/' : '#/id/' + currentId;
-        this.navigate(route, { trigger: true, replace: true });
+        return this.navigateBack();
       }
-    },
 
-    navigateToParent: function(force) {
-      if (Adapt.router.get('_canNavigate') || force) {
-        var parentId = Adapt.contentObjects.findWhere({ _id: Adapt.location._currentId }).get('_parentId');
-        var route = (parentId === Adapt.course.get('_id')) ? '#/' : '#/id/' + parentId;
-        this.navigate(route, { trigger: true });
-      }
-    },
+      // Move to a content object
+      this.showLoading();
+      await Adapt.remove();
 
-    setContentObjectToVisited: function(model) {
+      /**
+       * TODO:
+       * As the course object has separate location and type rules,
+       * it makes it more difficult to update the Adapt.location object
+       * should stop doing this.
+       */
+      const isCourse = (model instanceof CourseModel);
+      const type = isCourse ? 'menu' : model.get('_type');
+      const location = isCourse ? 'course' : `${type}-${id}`;
+
       model.set('_isVisited', true);
-    },
+      await this.updateLocation(location, type, id, model);
 
-    updateLocation: function(currentLocation, type, id, onComplete) {
+      Adapt.once('contentObjectView:ready', () => {
+        // Allow navigation.
+        this.model.set('_canNavigate', true, { pluginName: 'adapt' });
+        this.handleNavigationFocus();
+      });
+      Adapt.trigger(`router:${type} router:contentObject`, model);
+
+      const ViewClass = Adapt.getViewClass(model);
+      const isMenu = (model instanceof MenuModel);
+      if (!ViewClass && isMenu) {
+        Adapt.log.deprecated(`Using event based menu view instantiation for '${Adapt.getViewName(model)}'`);
+        return;
+      }
+      this.$wrapper.append(new ViewClass({ model }).$el);
+    }
+
+    async updateLocation(currentLocation, type, id, currentModel) {
       // Handles updating the location.
+      Adapt.location._previousModel = Adapt.location._currentModel;
       Adapt.location._previousId = Adapt.location._currentId;
       Adapt.location._previousContentType = Adapt.location._contentType;
 
-      if (currentLocation === 'course') {
-        Adapt.location._currentId = Adapt.course.get('_id');
-        Adapt.location._contentType = 'menu';
-        Adapt.location._lastVisitedMenu = currentLocation;
-      } else if (!type) {
-        Adapt.location._currentId = null;
-        Adapt.location._contentType = null;
-      } else if (_.isString(id)) {
-        Adapt.location._currentId = id;
-        Adapt.location._contentType = type;
-
-        if (type === 'menu') {
-          Adapt.location._lastVisitedType = 'menu';
-          Adapt.location._lastVisitedMenu = id;
-        } else if (type === 'page') {
-          Adapt.location._lastVisitedType = 'page';
-          Adapt.location._lastVisitedPage = id;
-        }
-      }
-
+      Adapt.location._currentModel = currentModel;
+      Adapt.location._currentId = id;
+      Adapt.location._contentType = type;
       Adapt.location._currentLocation = currentLocation;
 
-      var locationModel = Adapt.findById(id) || Adapt.course;
-      var htmlClasses = locationModel && locationModel.get('_htmlClasses') || '';
-
-      var classes = (Adapt.location._currentId) ? 'location-'
-        + Adapt.location._contentType
-        + ' location-id-'
-        + Adapt.location._currentId :
-        'location-' + Adapt.location._currentLocation;
-
-      var previousClasses = Adapt.location._previousClasses;
-      if (previousClasses) {
-        this.$html.removeClass(previousClasses);
+      /**
+       * TODO:
+       * this if block should be removed,
+       * these properties are unused in the framework
+       */
+      if (type === 'menu') {
+        Adapt.location._lastVisitedType = 'menu';
+        Adapt.location._lastVisitedMenu = id;
+      } else if (type === 'page') {
+        Adapt.location._lastVisitedType = 'page';
+        Adapt.location._lastVisitedPage = id;
       }
 
-      Adapt.location._previousClasses = classes + ' ' + htmlClasses;
-
-      this.$html
-          .addClass(classes)
-          .addClass(htmlClasses)
-          .attr('data-location', Adapt.location._currentLocation);
-
-      this.$wrapper
-          .removeClass()
-          .addClass(classes)
-          .attr('data-location', Adapt.location._currentLocation);
-
       this.setDocumentTitle();
+      this.setGlobalClasses();
 
       // Trigger event when location changes.
       Adapt.trigger('router:location', Adapt.location);
 
-      Adapt.wait.queue(onComplete);
-    },
+      await Adapt.wait.queue();
+    }
 
-    setDocumentTitle: function() {
-      if (!Adapt.location._currentId) return;
+    setGlobalClasses() {
+      const currentModel = Adapt.location._currentModel;
 
-      var currentModel = Adapt.findById(Adapt.location._currentId);
-      var pageTitle = '';
+      const htmlClasses = (currentModel && currentModel.get('_htmlClasses')) || '';
+      const classes = (Adapt.location._currentId) ?
+        `location-${Adapt.location._contentType} location-id-${Adapt.location._currentId}` :
+        `location-${Adapt.location._currentLocation}`;
+      const currentClasses = `${classes} ${htmlClasses}`;
 
-      if (currentModel && currentModel.get('_type') !== 'course') {
-        var currentTitle = currentModel.get('title');
+      this.$html
+        .removeClass(Adapt.location._previousClasses)
+        .addClass(currentClasses)
+        .attr('data-location', Adapt.location._currentLocation);
 
-        if (currentTitle) {
-          pageTitle = ' | ' + currentTitle;
-        }
-      }
+      this.$wrapper
+        .removeClass()
+        .addClass(classes)
+        .attr('data-location', Adapt.location._currentLocation);
 
-      var courseTitle = Adapt.course.get('title');
-      var documentTitle = $('<div>' + courseTitle + pageTitle + '</div>').text();
+      Adapt.location._previousClasses = currentClasses;
+    }
 
-      Adapt.once('pageView:ready menuView:ready', function() {
-        document.title = documentTitle;
-      });
-    },
-
-    handleNavigationFocus: function() {
-      if (!Adapt.router.get("_shouldNavigateFocus")) return;
+    handleNavigationFocus() {
+      if (!this.model.get('_shouldNavigateFocus')) return;
       // Body will be forced to accept focus to start the
       // screen reader reading the page.
       Adapt.a11y.focus('body');
     }
+
+    navigateBack() {
+      Backbone.history.history.back();
+    }
+
+    navigateToCurrentRoute(force) {
+      if (!this.model.get('_canNavigate') && !force) {
+        return;
+      }
+      if (!Adapt.location._currentId) {
+        return;
+      }
+      const currentId = Adapt.location._currentModel.get('_id');
+      const isRoot = (Adapt.location._currentModel === this.rootModel);
+      const route = isRoot ? '#/' : '#/id/' + currentId;
+      this.navigate(route, { trigger: true, replace: true });
+    }
+
+    navigateToPreviousRoute(force) {
+      // Sometimes a plugin might want to stop the default navigation.
+      // Check whether default navigation has changed.
+      if (!this.model.get('_canNavigate') && !force) {
+        return;
+      }
+      const currentModel = Adapt.location._currentModel;
+      const previousModel = Adapt.location._previousModel;
+      if (!currentModel) {
+        return this.navigateBack();
+      }
+      if (Adapt.location._currentModel instanceof MenuModel) {
+        return this.navigateToParent();
+      }
+      if (previousModel) {
+        return this.navigateBack();
+      }
+      this.navigateToParent();
+    }
+
+    navigateToParent(force) {
+      if (!this.model.get('_canNavigate') && !force) {
+        return;
+      }
+      const parentId = Adapt.location._currentModel.get('_parentId');
+      const parentModel = Adapt.findById(parentId);
+      const isRoot = (parentModel === this.rootModel);
+      const route = isRoot ? '#/' : '#/id/' + parentId;
+      this.navigate(route, { trigger: true });
+    }
+
+    navigateToHomeRoute(force) {
+      if (!this.model.get('_canNavigate') && !force) {
+        return;
+      }
+      this.navigate('#/', { trigger: true });
+    }
+
+    /**
+     * Allows a selector to be passed in and Adapt will navigate to this element
+     * @param {string} selector CSS selector of the Adapt element you want to navigate to e.g. `".co-05"`
+     * @param {object} [settings] The settings for the `$.scrollTo` function (See https://github.com/flesler/jquery.scrollTo#settings).
+     * You may also include a `replace` property that you can set to `true` if you want to update the URL without creating an entry in the browser's history.
+     */
+    navigateToElement(selector, settings = {}) {
+      // Removes . symbol from the selector to find the model
+      const currentModelId = selector.replace(/\./g, '');
+      const currentModel = Adapt.findById(currentModelId);
+      if (!currentModel) return;
+
+      // Get current page to check whether this is the current page
+      const currentPage = currentModel instanceof ContentObjectModel ? currentModel : currentModel.findAncestor('contentObjects');
+      const pageId = currentPage.get('_id');
+      // If current page - scrollTo element
+      if (pageId === Adapt.location._currentId) {
+        return Adapt.scrollTo(selector, settings);
+      }
+
+      // If the element is on another page navigate and wait until pageView:ready is fired
+      // Then scrollTo element
+      Adapt.once('contentObjectView:ready', _.debounce(() => {
+        this.model.set('_shouldNavigateFocus', true, { pluginName: 'adapt' });
+        Adapt.scrollTo(selector, settings);
+      }, 1));
+
+      const shouldReplaceRoute = settings.replace || false;
+
+      this.model.set('_shouldNavigateFocus', false, { pluginName: 'adapt' });
+      this.navigate('#/id/' + pageId, { trigger: true, replace: shouldReplaceRoute });
+    }
+
+    get(...args) {
+      Adapt.log.deprecated('Adapt.router.get, please use Adapt.router.model.get');
+      return this.model.get(...args);
+    }
+
+    set(...args) {
+      Adapt.log.deprecated('Adapt.router.set, please use Adapt.router.model.set');
+      return this.model.set(...args);
+    }
+
+  }
+
+  Adapt.router = new Router({
+    model: new RouterModel(null, { reset: true })
   });
 
-  return new Router({ model: new Backbone.Model() });
+  Adapt.navigateToElement = Adapt.router.navigateToElement.bind(Adapt.router);
+
+  return Adapt.router;
 
 });

@@ -32,8 +32,8 @@ define([
     },
 
     events: {
-      'click .notify-push-close': 'closePush',
-      'click .notify-push-inner': 'triggerEvent'
+      'click .js-notify-push-close-btn': 'closePush',
+      'click .js-notify-push-inner': 'triggerEvent'
     },
 
     preRender: function () {
@@ -51,7 +51,7 @@ define([
     },
 
     postRender: function () {
-      this.$el.addClass('show');
+      this.$el.addClass('is-active');
 
       _.delay(this.closePush.bind(this), this.model.get('_timeout'));
 
@@ -68,7 +68,7 @@ define([
 
         this.hasBeenRemoved = true;
 
-        this.$el.removeClass('show');
+        this.$el.removeClass('is-active');
 
         _.delay(function () {
           this.model.collection.remove(this.model);
@@ -102,12 +102,12 @@ define([
         return;
       }
 
-      if (this.model.get('_index') != undefined) {
+      if (typeof this.model.get('_index') !== 'undefined') {
         var elementHeight = this.$el.height();
         var offset = 20;
         var navigationHeight = $('.nav').height();
         var currentIndex = this.model.get('_index');
-        var flippedIndex = (currentIndex == 0) ? 1 : 0;
+        var flippedIndex = (currentIndex === 0) ? 1 : 0;
 
         if (this.model.collection.where({ _isActive: true }).length === 1) {
           flippedIndex = 0;
