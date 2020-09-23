@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$merge": {
+    "source": { "$ref": "content" },
+    "with": {
+      "properties": {
+        "_pageLevelProgress": {
+          "type": "object",
+          "default": {},
+          "properties": {
+            "_isEnabled": {
+              "type": "boolean",
+              "default": false,
+              "title": "Is enabled",
+              "inputType": "Checkbox",
+              "help": "Controls whether the Page Level Progress extension is used on this item."
+            },
+            "_isCompletionIndicatorEnabled": {
+              "type": "boolean",
+              "default": false,
+              "title": "Show completion indicator",
+              "inputType": "Checkbox",
+              "help": "Controls whether the completion indicator shows next to the item title."
+            }
+          }
+        }
+      }
+    }
+  }
+}
