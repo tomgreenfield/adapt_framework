@@ -1,10 +1,17 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "config",
+  "$anchor": "config",
+  "$schema": "http://json-schema.org/draft/2019-09/schema#",
   "type": "object",
   "$merge": {
-    "source": { "$ref": "content" },
+    "source": {
+      "$ref": "content"
+    },
     "with": {
+      "required": [
+        "_defaultLanguage",
+        "_defaultDirection",
+        "_questionWeight"
+      ],
       "properties": {
         "_extensions": {
           "type": "object",
@@ -29,7 +36,8 @@
         "_courseId": {
           "type": "string",
           "isObjectId": true,
-          "title": "Course id"
+          "title": "Course id",
+          "default": ""
         },
         "_completionCriteria": {
           "type": "object",
@@ -75,12 +83,6 @@
               "title": "Enabled?",
               "default": true
             },
-            "_isTextProcessorEnabled": {
-              "type": "boolean",
-              "title": "Enable text reader support?",
-              "description": "Adds focusing to assist text reader software",
-              "default": false
-            },
             "_isSkipNavigationEnabled": {
               "type": "boolean",
               "title": "Enable Skip Navigation link?",
@@ -92,6 +94,17 @@
               "title": "ARIA Levels",
               "description": "Defines what value to assign to the aria-level attribute for the various elements of Adapt",
               "default": {},
+              "required": [
+                "_menu",
+                "_menuGroup",
+                "_menuItem",
+                "_page",
+                "_article",
+                "_block",
+                "_component",
+                "_componentItem",
+                "_notify"
+              ],
               "properties": {
                 "_menu": {
                   "type": "number",
@@ -103,9 +116,20 @@
                     ]
                   }
                 },
+                "_menuGroup": {
+                  "type": "number",
+                  "title": "Menu Group element ARIA level",
+                  "default": 2,
+                  "_backboneForms": {
+                    "validators": [
+                      "number"
+                    ]
+                  }
+                },
                 "_menuItem": {
                   "type": "number",
                   "title": "Menu Item element ARIA level",
+                  "description": "The Menu Item element ARIA level will need to be changed to 3 if Menu Groups are being used and A11Y support is required.",
                   "default": 2,
                   "_backboneForms": {
                     "validators": [
@@ -187,10 +211,27 @@
             }
           }
         },
+        "_fixes": {
+          "type": "object",
+          "title": "Fixes Extended Options",
+          "description": "Optional object that can be used to customize the application of fixes",
+          "default": {
+            "_imgLazyLoad": true
+          },
+          "_backboneForms": {
+            "type": "CodeEditor",
+            "mode": "json"
+          }
+        },
         "screenSize": {
           "type": "object",
           "title": "Screen Size",
           "default": {},
+          "required": [
+            "small",
+            "medium",
+            "large"
+          ],
           "properties": {
             "small": {
               "type": "number",
@@ -244,6 +285,11 @@
           "type": "object",
           "title": "Drawer",
           "default": {},
+          "required": [
+            "_showEasing",
+            "_hideEasing",
+            "_duration"
+          ],
           "properties": {
             "_showEasing": {
               "type": "string",
@@ -391,6 +437,11 @@
               "type": "boolean",
               "title": "Log to browser console?",
               "default": true
+            },
+            "_warnFirstOnly": {
+              "type": "boolean",
+              "title": "Show only first deprecated and removed warnings?",
+              "default": true
             }
           }
         },
@@ -420,7 +471,8 @@
         "_themePreset": {
           "type": "string",
           "isObjectId": true,
-          "title": "Theme preset"
+          "title": "Theme preset",
+          "default": ""
         }
       }
     }

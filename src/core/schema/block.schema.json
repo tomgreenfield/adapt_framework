@@ -1,9 +1,11 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "block",
+  "$anchor": "block",
+  "$schema": "http://json-schema.org/draft/2019-09/schema#",
   "type": "object",
   "$merge": {
-    "source": { "$ref": "content" },
+    "source": {
+      "$ref": "content"
+    },
     "with": {
       "properties": {
         "_trackingId": {
@@ -19,62 +21,19 @@
             "editorOnly": true
           }
         },
-        "instruction": {
-          "type": "string",
-          "title": "Instruction text",
-          "default": "",
+        "_requireCompletionOf": {
+          "type": "number",
+          "title": "Require completion of",
+          "description": "The number of components within this block the learner must complete in order for this block to be set as completed. A value of -1 requires all of them to be completed.",
+          "default": -1,
           "_adapt": {
-            "translatable": true
+            "isSetting": true
+          },
+          "_backboneForms": {
+            "validators": [
+              "number"
+            ]
           }
-        },
-        "_onScreen": {
-          "type": "object",
-          "title": "On-screen classes",
-          "description": "These settings allow you to attach classes to the block when it is within the browser's viewport; helpful for running CSS-based animations on blocks as they scroll into view.",
-          "default": {},
-          "properties": {
-            "_isEnabled": {
-              "type": "boolean",
-              "title": "Enabled?",
-              "default": false,
-              "_adapt": {
-                "isSetting": true
-              }
-            },
-            "_classes": {
-              "type": "string",
-              "title": "Classes",
-              "description": "The CSS class(es) to add to the block element.",
-              "default": "",
-              "_adapt": {
-                "isSetting": true
-              }
-            },
-            "_percentInviewVertical": {
-              "type": "number",
-              "title": "Percent in view",
-              "description": "Controls what percentage of the block's height needs to be in the viewport in order for the CSS class(es) to be added.",
-              "default": 50,
-              "_adapt": {
-                "isSetting": true
-              },
-              "_backboneForms": {
-                "validators": [
-                  "number"
-                ]
-              }
-            }
-          }
-        },
-        "_extensions": {
-          "type": "object",
-          "title": "Extensions",
-          "default": {}
-        },
-        "themeSettings": {
-          "type": "object",
-          "title": "Theme settings",
-          "default": {}
         }
       }
     }

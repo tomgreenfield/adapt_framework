@@ -1,15 +1,18 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "component",
+  "$anchor": "component",
+  "$schema": "http://json-schema.org/draft/2019-09/schema#",
   "type": "object",
   "$merge": {
-    "source": { "$ref": "content" },
+    "source": {
+      "$ref": "content"
+    },
     "with": {
       "properties": {
         "_componentType": {
           "type": "string",
           "isObjectId": true,
           "title": "Component type",
+          "default": "",
           "_adapt": {
             "editorOnly": true
           },
@@ -27,6 +30,21 @@
           "title": "Layout",
           "default": ""
         },
+        "_isResetOnRevisit": {
+          "type": "string",
+          "title": "Reset when revisited?",
+          "description": "Controls whether this component will be reset when the learner leaves the page then returns to it. The 'soft' setting will reset the component to allow the learner to attempt it again, but will not require them to do so; whereas the 'hard' setting will require them to do so. The default (false) will not cause the component to be reset.",
+          "default": "false",
+          "enum": [
+            "false",
+            "soft",
+            "hard"
+          ],
+          "_adapt": {
+            "isSetting": true
+          },
+          "_backboneForms": "Select"
+        },
         "_disableAccessibilityState": {
           "type": "boolean",
           "title": "Is the accessibility state disabled?",
@@ -35,55 +53,6 @@
           "_adapt": {
             "isSetting": true
           }
-        },
-        "_onScreen": {
-          "type": "object",
-          "title": "On-screen classes",
-          "description": "These settings allow you to attach classes to the component when it is within the browser's viewport; helpful for running CSS-based animations on components as they scroll into view.",
-          "default": {},
-          "properties": {
-            "_isEnabled": {
-              "type": "boolean",
-              "title": "Enabled?",
-              "default": false,
-              "_adapt": {
-                "isSetting": true
-              }
-            },
-            "_classes": {
-              "type": "string",
-              "title": "Classes",
-              "description": "The CSS class(es) to add to the component element.",
-              "default": "",
-              "_adapt": {
-                "isSetting": true
-              }
-            },
-            "_percentInviewVertical": {
-              "type": "number",
-              "title": "Percent in view",
-              "description": "Controls what percentage of the component's height needs to be in the viewport in order for the CSS class(es) to be added.",
-              "default": 50,
-              "_adapt": {
-                "isSetting": true
-              },
-              "_backboneForms": {
-                "validators": [
-                  "number"
-                ]
-              }
-            }
-          }
-        },
-        "_extensions": {
-          "type": "object",
-          "title": "Extensions",
-          "default": {}
-        },
-        "themeSettings": {
-          "type": "object",
-          "title": "Theme settings",
-          "default": {}
         },
         "properties": {
           "type": "object",
