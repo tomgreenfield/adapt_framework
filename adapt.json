@@ -1,7 +1,7 @@
 {
     "dependencies": {
         "adapt-contrib-vanilla": "*",
-        "adapt-contrib-text": "*",
+        "adapt-contrib-text": "v4.2.0-alpha.1",
         "adapt-contrib-narrative": "*",
         "adapt-contrib-media": "*",
         "adapt-contrib-hotgraphic": "*",
