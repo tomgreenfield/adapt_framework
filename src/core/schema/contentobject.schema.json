@@ -77,11 +77,6 @@
           "default": "",
           "_adapt": {
             "translatable": true
-          },
-          "_backboneForms": {
-            "validators": [
-              ""
-            ]
           }
         },
         "_lockedBy": {
@@ -112,11 +107,6 @@
           "default": -1,
           "_adapt": {
             "isSetting": true
-          },
-          "_backboneForms": {
-            "validators": [
-              "number"
-            ]
           }
         },
         "_sortOrder": {

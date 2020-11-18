@@ -499,11 +499,6 @@
           "default": -1,
           "_adapt": {
             "isSetting": true
-          },
-          "_backboneForms": {
-            "validators": [
-              "number"
-            ]
           }
         },
         "_isSelected": {

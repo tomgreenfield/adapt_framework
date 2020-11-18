@@ -109,93 +109,48 @@
                 "_menu": {
                   "type": "number",
                   "title": "Menu element ARIA level",
-                  "default": 1,
-                  "_backboneForms": {
-                    "validators": [
-                      "number"
-                    ]
-                  }
+                  "default": 1
                 },
                 "_menuGroup": {
                   "type": "number",
                   "title": "Menu Group element ARIA level",
-                  "default": 2,
-                  "_backboneForms": {
-                    "validators": [
-                      "number"
-                    ]
-                  }
+                  "default": 2
                 },
                 "_menuItem": {
                   "type": "number",
                   "title": "Menu Item element ARIA level",
                   "description": "The Menu Item element ARIA level will need to be changed to 3 if Menu Groups are being used and A11Y support is required.",
-                  "default": 2,
-                  "_backboneForms": {
-                    "validators": [
-                      "number"
-                    ]
-                  }
+                  "default": 2
                 },
                 "_page": {
                   "type": "number",
                   "title": "Page element ARIA level",
-                  "default": 1,
-                  "_backboneForms": {
-                    "validators": [
-                      "number"
-                    ]
-                  }
+                  "default": 1
                 },
                 "_article": {
                   "type": "number",
                   "title": "Article element ARIA level",
-                  "default": 2,
-                  "_backboneForms": {
-                    "validators": [
-                      "number"
-                    ]
-                  }
+                  "default": 2
                 },
                 "_block": {
                   "type": "number",
                   "title": "Block element ARIA level",
-                  "default": 3,
-                  "_backboneForms": {
-                    "validators": [
-                      "number"
-                    ]
-                  }
+                  "default": 3
                 },
                 "_component": {
                   "type": "number",
                   "title": "Component element ARIA level",
-                  "default": 4,
-                  "_backboneForms": {
-                    "validators": [
-                      "number"
-                    ]
-                  }
+                  "default": 4
                 },
                 "_componentItem": {
                   "type": "number",
                   "title": "Component Item element ARIA level",
-                  "default": 5,
-                  "_backboneForms": {
-                    "validators": [
-                      "number"
-                    ]
-                  }
+                  "default": 5
                 },
                 "_notify": {
                   "type": "number",
                   "title": "Notify popup title ARIA level",
-                  "default": 1,
-                  "_backboneForms": {
-                    "validators": [
-                      "number"
-                    ]
-                  }
+                  "default": 1
                 }
               }
             },
@@ -237,34 +192,19 @@
               "type": "number",
               "title": "Small",
               "description": "Pixel width for the small breakpoint, e.g. cellphones",
-              "default": 520,
-              "_backboneForms": {
-                "validators": [
-                  "number"
-                ]
-              }
+              "default": 520
             },
             "medium": {
               "type": "number",
               "title": "Medium",
               "description": "Pixel width for the medium breakpoint, e.g. tablet devices",
-              "default": 760,
-              "_backboneForms": {
-                "validators": [
-                  "number"
-                ]
-              }
+              "default": 760
             },
             "large": {
               "type": "number",
               "title": "Large",
               "description": "Pixel width for the large breakpoint, e.g. laptop/desktop computers",
-              "default": 900,
-              "_backboneForms": {
-                "validators": [
-                  "number"
-                ]
-              }
+              "default": 900
             }
           }
         },
@@ -274,11 +214,6 @@
           "default": 1,
           "_adapt": {
             "isSetting": true
-          },
-          "_backboneForms": {
-            "validators": [
-              "number"
-            ]
           }
         },
         "_drawer": {
@@ -370,12 +305,7 @@
             "_duration": {
               "type": "number",
               "title": "Duration",
-              "default": 400,
-              "_backboneForms": {
-                "validators": [
-                  "number"
-                ]
-              }
+              "default": 400
             }
           },
           "_adapt": {

@@ -116,11 +116,6 @@
       "default": 0,
       "_adapt": {
         "isSetting": true
-      },
-      "_backboneForms": {
-        "validators": [
-          "number"
-        ]
       }
     },
     "_onScreen": {
@@ -153,11 +148,6 @@
           "default": 50,
           "_adapt": {
             "isSetting": true
-          },
-          "_backboneForms": {
-            "validators": [
-              "number"
-            ]
           }
         }
       }
