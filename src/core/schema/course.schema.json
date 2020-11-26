@@ -1,9 +1,11 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "course",
+  "$anchor": "course",
+  "$schema": "http://json-schema.org/draft/2019-09/schema#",
   "type": "object",
   "$merge": {
-    "source": { "$ref": "content" },
+    "source": {
+      "$ref": "content"
+    },
     "with": {
       "properties": {
         "heroImage": {
@@ -14,25 +16,10 @@
           "_adapt": {
             "editorOnly": true
           },
-          "_backboneForms": "Asset:image"
-        },
-        "title": {
-          "type": "string",
-          "title": "Title",
-          "default": "New Course Title",
-          "_adapt": {
-            "translatable": true
+          "_backboneForms": {
+            "type": "Asset",
+            "media": "image"
           }
-        },
-        "displayTitle": {
-          "type": "string",
-          "title": "Display title",
-          "description": "This is the title that will be displayed on the course's main menu",
-          "default": "New Course Title",
-          "_adapt": {
-            "translatable": true
-          },
-          "_backboneForms": "DisplayTitle"
         },
         "subtitle": {
           "type": "string",
@@ -52,33 +39,11 @@
             "translatable": true
           }
         },
-        "body": {
-          "type": "string",
-          "title": "Body",
-          "default": "",
-          "_adapt": {
-            "translatable": true
-          },
-          "_backboneForms": "TextArea"
-        },
-        "instruction": {
-          "type": "string",
-          "title": "Instruction text",
-          "default": "",
-          "_adapt": {
-            "translatable": true
-          }
-        },
         "_htmlClasses": {
           "type": "string",
           "title": "HTML Classes",
           "description": "If set, this class will be applied to the <html> element when the top-level menu in the course is displayed. These are predefined in the theme or added in Custom CSS/Less code.",
           "default": ""
-        },
-        "_extensions": {
-          "type": "object",
-          "title": "Extensions",
-          "default": {}
         },
         "_latestTrackingId": {
           "type": "number",
@@ -104,7 +69,6 @@
               "title": "Start List",
               "items": {
                 "type": "object",
-                "default": {},
                 "properties": {
                   "_id": {
                     "type": "string",
@@ -158,6 +122,9 @@
               "type": "object",
               "title": "Accessibility",
               "default": {},
+              "required": [
+                "skipNavigationText"
+              ],
               "properties": {
                 "skipNavigationText": {
                   "type": "string",
@@ -342,11 +309,20 @@
           "type": "object",
           "title": "Buttons",
           "default": {},
+          "required": [
+            "remainingAttemptsText",
+            "remainingAttemptText",
+            "disabledAriaLabel"
+          ],
           "properties": {
             "_submit": {
               "type": "object",
               "title": "Submit",
               "default": {},
+              "required": [
+                "buttonText",
+                "ariaLabel"
+              ],
               "properties": {
                 "buttonText": {
                   "type": "string",
@@ -370,6 +346,10 @@
               "type": "object",
               "title": "Reset",
               "default": {},
+              "required": [
+                "buttonText",
+                "ariaLabel"
+              ],
               "properties": {
                 "buttonText": {
                   "type": "string",
@@ -393,6 +373,10 @@
               "type": "object",
               "title": "Show correct answer",
               "default": {},
+              "required": [
+                "buttonText",
+                "ariaLabel"
+              ],
               "properties": {
                 "buttonText": {
                   "type": "string",
@@ -416,6 +400,10 @@
               "type": "object",
               "title": "Hide correct answer",
               "default": {},
+              "required": [
+                "buttonText",
+                "ariaLabel"
+              ],
               "properties": {
                 "buttonText": {
                   "type": "string",
@@ -439,6 +427,10 @@
               "type": "object",
               "title": "Show feedback",
               "default": {},
+              "required": [
+                "buttonText",
+                "ariaLabel"
+              ],
               "properties": {
                 "buttonText": {
                   "type": "string",
@@ -491,16 +483,20 @@
           "type": "array",
           "title": "Tags",
           "description": "Add tags to your course by entering one or more words, separated with a comma (,)",
+          "items": {
+            "type": "string",
+            "isObjectId": true
+          },
           "_adapt": {
             "editorOnly": true
           },
           "_backboneForms": "Tags"
         },
-        "_classes": {
-          "type": "string",
-          "title": "Menu Classes",
-          "description": "Used to style or manipulate the look and feel of the top level Menu. These are predefined in the theme or added in Custom CSS/Less code.",
-          "default": "",
+        "_requireCompletionOf": {
+          "type": "number",
+          "title": "Require completion of",
+          "description": "The number of content objects within this course the learner must complete in order for this course to be set as completed. A value of -1 requires all of them to be completed.",
+          "default": -1,
           "_adapt": {
             "isSetting": true
           }
@@ -534,12 +530,11 @@
           "type": "array",
           "title": "Share with specific users",
           "description": "Defines which individual users are able to edit this course",
+          "items": {
+            "type": "string",
+            "isObjectId": true
+          },
           "_backboneForms": "Users"
-        },
-        "themeSettings": {
-          "type": "object",
-          "title": "Theme settings",
-          "default": {}
         },
         "themeVariables": {
           "type": "object",
@@ -570,7 +565,10 @@
           "title": "Custom CSS/LESS code",
           "description": "Add any custom CSS or valid LESS code here",
           "default": "",
-          "_backboneForms": "CodeEditor:less"
+          "_backboneForms": {
+            "type": "CodeEditor",
+            "mode": "less"
+          }
         },
         "externalReferences": {
           "type": "object",

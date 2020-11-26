@@ -1,10 +1,15 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "contentobject",
+  "$anchor": "contentobject",
+  "$schema": "http://json-schema.org/draft/2019-09/schema#",
   "type": "object",
   "$merge": {
-    "source": { "$ref": "content" },
+    "source": {
+      "$ref": "content"
+    },
     "with": {
+      "required": [
+        "linkText"
+      ],
       "properties": {
         "subtitle": {
           "type": "string",
@@ -25,14 +30,6 @@
           },
           "_backboneForms": "TextArea"
         },
-        "instruction": {
-          "type": "string",
-          "title": "Instruction text",
-          "default": "",
-          "_adapt": {
-            "translatable": true
-          }
-        },
         "_htmlClasses": {
           "type": "string",
           "title": "HTML Classes",
@@ -46,7 +43,7 @@
           "properties": {
             "alt": {
               "type": "string",
-              "title": "Alt",
+              "title": "Alternative text",
               "description": "This is the alternative text that is displayed when the image is not visible. This is also used by screen readers.",
               "default": "",
               "_adapt": {
@@ -58,7 +55,10 @@
               "title": "Src",
               "description": "This is the link to the image.",
               "default": "",
-              "_backboneForms": "Asset:image"
+              "_backboneForms": {
+                "type": "Asset",
+                "media": "image"
+              }
             }
           }
         },
@@ -77,11 +77,6 @@
           "default": "",
           "_adapt": {
             "translatable": true
-          },
-          "_backboneForms": {
-            "validators": [
-              ""
-            ]
           }
         },
         "_lockedBy": {
@@ -105,49 +100,14 @@
           ],
           "_backboneForms": "Select"
         },
-        "_onScreen": {
-          "type": "object",
-          "title": "On-screen classes",
-          "description": "These settings allow you to attach classes to the page when it is within the browser's viewport; helpful for running CSS-based animations on pages as they scroll into view.",
-          "default": {},
-          "properties": {
-            "_isEnabled": {
-              "type": "boolean",
-              "title": "Enabled?",
-              "default": false,
-              "_adapt": {
-                "isSetting": true
-              }
-            },
-            "_classes": {
-              "type": "string",
-              "title": "Classes",
-              "description": "The CSS class(es) to add to the page element.",
-              "default": "",
-              "_adapt": {
-                "isSetting": true
-              }
-            },
-            "_percentInviewVertical": {
-              "type": "number",
-              "title": "Percent in view",
-              "description": "Controls what percentage of the page's height needs to be in the viewport in order for the CSS class(es) to be added.",
-              "default": 50,
-              "_adapt": {
-                "isSetting": true
-              },
-              "_backboneForms": {
-                "validators": [
-                  "number"
-                ]
-              }
-            }
+        "_requireCompletionOf": {
+          "type": "number",
+          "title": "Require completion of",
+          "description": "The number of articles within this page the learner must complete in order for this page to be set as completed. A value of -1 requires all of them to be completed.",
+          "default": -1,
+          "_adapt": {
+            "isSetting": true
           }
-        },
-        "_extensions": {
-          "type": "object",
-          "title": "Extensions",
-          "default": {}
         },
         "_sortOrder": {
           "type": "number",
@@ -160,11 +120,6 @@
         "menuSettings": {
           "type": "object",
           "title": "Menu settings",
-          "default": {}
-        },
-        "themeSettings": {
-          "type": "object",
-          "title": "Theme settings",
           "default": {}
         }
       }
