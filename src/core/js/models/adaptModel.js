@@ -30,6 +30,7 @@ define([
         _canShowFeedback: true,
         _classes: '',
         _canReset: false,
+        _canRequestChild: false,
         _isComplete: false,
         _isInteractionComplete: false,
         _isA11yRegionEnabled: false,
@@ -39,6 +40,7 @@ define([
         _isResetOnRevisit: false,
         _isAvailable: true,
         _isOptional: false,
+        _isRendered: false,
         _isReady: false,
         _isVisible: true,
         _isLocked: false,
@@ -54,17 +56,20 @@ define([
       ];
     }
 
+    trackableType() {
+      return [
+        String,
+        Boolean,
+        Boolean
+      ];
+    }
+
     bubblingEvents() {
       return [
         'change:_isComplete',
         'change:_isInteractionComplete',
         'change:_isActive'
       ];
-    }
-
-    initialize() {
-      // Wait until data is loaded before setting up model
-      this.listenToOnce(Adapt, 'app:dataLoaded', this.setupModel);
     }
 
     setupModel() {
@@ -205,16 +210,30 @@ define([
       }
     }
 
-    checkReadyStatus() {
+    /**
+     * Checks if any child models which have been _isRendered are not _isReady.
+     * If all rendered child models are marked ready then this model will be
+     * marked _isReady: true as well.
+     * @param {AdaptModel} [model]
+     * @param {boolean} [value]
+     * @returns {boolean}
+     */
+    checkReadyStatus(model, value) {
+      if (value === false) {
+        // Do not respond to _isReady: false as _isReady is unset throughout
+        // the rendering process
+        return false;
+      }
       // Filter children based upon whether they are available
-      // Check if any return _isReady:false
+      // Check if any _isRendered: true children return _isReady: false
       // If not - set this model to _isReady: true
       const children = this.getAvailableChildModels();
-      if (children.find(child => child.get('_isReady') === false)) {
-        return;
+      if (children.find(child => child.get('_isReady') === false && child.get('_isRendered'))) {
+        return false;
       }
 
       this.set('_isReady', true);
+      return true;
     }
 
     setCompletionStatus() {
@@ -336,13 +355,13 @@ define([
 
     /**
      * Returns all the descendant models of a specific type
-     * @param {string} descendants Valid values are 'contentObjects', 'pages', 'menus', 'articles', 'blocks' or 'components'
+     * @param {string} descendants Valid values are 'contentobject', 'page', 'menu', 'article', 'block', 'component', 'question'
      * @param {object} options an object that defines the search type and the properties/values to search on. Currently only the `where` search type (equivalent to `Backbone.Collection.where()`) is supported.
      * @param {object} options.where
      * @return {array}
      * @example
      * //find all available, non-optional components
-     * this.findDescendantModels('components', { where: { _isAvailable: true, _isOptional: false }});
+     * this.findDescendantModels('component', { where: { _isAvailable: true, _isOptional: false }});
      */
     findDescendantModels(descendants, options) {
       const allDescendantsModels = this.getAllDescendantModels();
@@ -729,6 +748,72 @@ define([
       this.checkCompletionStatus();
 
       this.checkLocking();
+    }
+
+    /**
+     * Used before a model is rendered to determine if it should be reset to its
+     * default values.
+     */
+    checkIfResetOnRevisit() {
+      var isResetOnRevisit = this.get('_isResetOnRevisit');
+      if (!isResetOnRevisit) {
+        return;
+      }
+      // If reset is enabled set defaults
+      this.reset(isResetOnRevisit);
+    }
+
+    /**
+     * Clones this model and all managed children returning a new branch.
+     * Assign new unique ids to each cloned model.
+     * @param {Function} [modifier] A callback function for each child to allow for custom modifications
+     * @returns {AdaptModel}
+     */
+    deepClone(modifier = null) {
+      // Fetch the class
+      const ModelClass = this.constructor;
+      // Clone the model
+      const clonedModel = new ModelClass(this.toJSON());
+      // Run the custom modifier on the clone
+      if (modifier) {
+        modifier(clonedModel, this);
+      }
+      let clonedId = clonedModel.get('_id');
+      const hasId = Boolean(clonedId);
+      const shouldAssignUniqueId = (this.get('_id') === clonedId);
+      if (hasId && shouldAssignUniqueId) {
+        // Create a unique id if none was set by the modifier
+        const cid = _.uniqueId(ModelClass.prototype.cidPrefix || 'c');
+        clonedId = `${clonedId}_${cid}`;
+        clonedModel.set('_id', clonedId);
+      }
+      // Add the cloned model to Adapt.data for Adapt.findById resolution
+      if (hasId) {
+        Adapt.data.add(clonedModel);
+      }
+      // Clone any children
+      if (this.hasManagedChildren) {
+        this.getChildren().each(child => {
+          if (!child.deepClone) {
+            throw new Error('Cannot deepClone child.');
+          }
+          child.deepClone((clone, child) => {
+            if (hasId) {
+              // Set the cloned child parent id
+              clone.set('_parentId', clonedId);
+            }
+            if (modifier) {
+              // Run the custom modifier function on the cloned child
+              modifier(clone, child);
+            }
+          });
+        });
+      }
+      // Add the cloned model to its parent for model.findDescendants resolution
+      clonedModel.getParent().getChildren().add(clonedModel);
+      // Setup the cloned model after setting the id, the parent and adding any children
+      clonedModel.setupModel();
+      return clonedModel;
     }
 
     /**

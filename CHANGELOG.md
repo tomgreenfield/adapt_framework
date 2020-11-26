@@ -1,3 +1,68 @@
+## [5.7.1] - 2020-10-09
+
+### Fixed
+* Page Level Progress indicators disrupting container outlines in Firefox - now fixed for article/block/page level indicators as well ([#2619](https://github.com/adaptlearning/adapt_framework/issues/2619))
+* `Adapt.navigateToElement('.pageId')` errors ([#2901](https://github.com/adaptlearning/adapt_framework/issues/2901))
+* `"view:requestChild"` event life-cycle never closes ([#2903](https://github.com/adaptlearning/adapt_framework/issues/2903))
+* Switching language forces the 'start page' config to be enabled ([#2907](https://github.com/adaptlearning/adapt_framework/issues/2907))
+* Firefox display of `*-title-inner` elements when using outline ([#2912](https://github.com/adaptlearning/adapt_framework/issues/2912))
+* IE11 broken display of .svg in `<img>` ([#2916](https://github.com/adaptlearning/adapt_framework/issues/2916))
+* `Adapt.scrollTo` assumes the selector parameter will always refer to an 'Adapt Element' ([#2928](https://github.com/adaptlearning/adapt_framework/issues/2928))
+
+### Changed
+* General clean up of Less code ([#2891](https://github.com/adaptlearning/adapt_framework/issues/2891))
+
+## [5.7.0] - 2020-08-25
+### Added
+* New `AttemptStates` API ([#2747](https://github.com/adaptlearning/adapt_framework/issues/2747))
+* A `save` method to the `offlineStorage` API ([#2754](https://github.com/adaptlearning/adapt_framework/issues/2754))
+* New `DeepClone` API ([#2758](https://github.com/adaptlearning/adapt_framework/issues/2758))
+* New `ChildViews` API for rendering control ([#2760](https://github.com/adaptlearning/adapt_framework/issues/2760))
+* Option to track content at component level instead of block level ([#2805](https://github.com/adaptlearning/adapt_framework/issues/2805)). Note: requires [v3.5.0 of the spoor plugin](https://github.com/adaptlearning/adapt-contrib-spoor/releases/tag/v3.5.0).
+* Ability to exclude plugins from a 'production' build ([#2836](https://github.com/adaptlearning/adapt_framework/issues/2836))
+* Image compression via new `grunt compress` command ([#2866](https://github.com/adaptlearning/adapt_framework/issues/2866))
+* Ability to have the state of presentation components saved between sessions ([#2845](https://github.com/adaptlearning/adapt_framework/issues/2845)). Note: requires [v3.5.0 of the spoor plugin](https://github.com/adaptlearning/adapt-contrib-spoor/releases/tag/v3.5.0).
+
+### Changed
+* Underscore library updated to v1.10.2 ([#2773](https://github.com/adaptlearning/adapt_framework/issues/2773))
+* Submit button is now disabled until the learner makes a selection ([#2812](https://github.com/adaptlearning/adapt_framework/issues/2812)). Note: If you prefer the old behaviour, you can use the [instructionError plugin](https://github.com/adaptlearning/adapt-contrib-instructionError) to restore it.
+* Amended authoring tool schema defaults so that articles and blocks have no display title set automatically ([#2833](https://github.com/adaptlearning/adapt_framework/issues/2833))
+* Lodash dependency changed to v4.17.19 ([#2838](https://github.com/adaptlearning/adapt_framework/pull/2838))
+* Amended `setupInviewCompletion` to use default parameter ([2839](https://github.com/adaptlearning/adapt_framework/issues/2839))
+* Improvements to Notify's `subview` handling ([#2847](https://github.com/adaptlearning/adapt_framework/issues/2847))
+* Load Underscore as a UMD module ([#2861](https://github.com/adaptlearning/adapt_framework/issues/2861))
+* Turn off deprecation for the `contentObjects`, `articles`, `blocks` and `components` collections ([#2859](https://github.com/adaptlearning/adapt_framework/issues/2859))
+
+### Fixed
+* Ensure that in the 'default course' all components have `_pageLevelProgress._isCompletionIndicatorEnabled` set ([#2841](https://github.com/adaptlearning/adapt_framework/issues/2841))
+* `JQuery.offset` returning incorrect values when `_scrollingContainer` enabled ([#2849](https://github.com/adaptlearning/adapt_framework/issues/2849))
+* Bug in `DrawerView` that was causing a runtime error for some plugins ([#2851](https://github.com/adaptlearning/adapt_framework/issues/2851))
+* `grunt build` failing when used with the `languages` switch ([#2875](https://github.com/adaptlearning/adapt_framework/issues/2875))
+* Issue with CSV delimiter detection when using `grunt translate:import` ([#2853](https://github.com/adaptlearning/adapt_framework/issues/2853))
+* `Notify` popup causing scroll to jump to top of page in Firefox ([#2886](https://github.com/adaptlearning/adapt_framework/issues/2886))
+* View-only question components defaulting to `ComponentModel` not `QuestionModel` ([#2884](https://github.com/adaptlearning/adapt_framework/issues/2884))
+
+## [5.6.1] - 2020-07-07
+#### Fixed
+* Further issues found on [#2796](https://github.com/adaptlearning/adapt_framework/issues/2796)
+* Zoom not working on Chrome for Android ([#2800](https://github.com/adaptlearning/adapt_framework/issues/2800))
+* Default course assessment page trickle button labels not well labelled ([#2803](https://github.com/adaptlearning/adapt_framework/issues/2803))
+* Graphic and pageLevelProgress templates not allowing for HTML entities in `aria-label` attribute ([#2807](https://github.com/adaptlearning/adapt_framework/issues/2807))
+* Babel fast-async causing very slow compilation ([#2816](https://github.com/adaptlearning/adapt_framework/issues/2816))
+* Value of `_isResetOnRevisit` not being converted from `String` to `Boolean` ([#2825](https://github.com/adaptlearning/adapt_framework/issues/2825))
+
+## [5.6.0] - 2020-06-17
+#### Fixed
+* Decontaminated toJSON functions  ([#2745](https://github.com/adaptlearning/adapt_framework/issues/2745))
+* Display marking only on final question attempts  ([#2796](https://github.com/adaptlearning/adapt_framework/issues/2796))
+* Allow notify view to accept DOM attributes ([#2785](https://github.com/adaptlearning/adapt_framework/issues/2785))
+* jQuery resize timeout bug ([#2782](https://github.com/adaptlearning/adapt_framework/issues/2782))
+
+#### Added
+* Menu group aria level ([#2782](https://github.com/adaptlearning/adapt_framework/issues/2782))
+* AdaptModel `setChildren` and `setParent` functions
+
+
 ## [5.5.1] - 2020-06-08
 ### Fixed
 * Backward compatibility for view-only components ([#2787](https://github.com/adaptlearning/adapt_framework/issues/2787))
@@ -107,15 +172,15 @@ For a more detailed overview of the changes see ([#2711](https://github.com/adap
 - Split `drawerItemView` into new file
 - Changed LESS folder structure
 - Updated heading aria label to use title property
-- Changed `_htmlClassName` to `_htmlClasses` (https://github.com/adaptlearning/adapt_framework/issues/2392)
+- Changed `_htmlClassName` to `_htmlClasses` ([#2392](https://github.com/adaptlearning/adapt_framework/issues/2392))
 - Amended viewport meta tag (https://github.com/adaptlearning/adapt_framework/pull/2569)
 - Indentation amended to use 2 spaces instead of 4
 
 ### Fixed
-- Drawer no longer renders two `role='list'`
+- Drawer no longer renders two `role='list'` attributes
 
 ### Removed
-- Deprecated functionality (https://github.com/adaptlearning/adapt_framework/issues/2329)
+- Deprecated functionality ([#2329](https://github.com/adaptlearning/adapt_framework/issues/2329))
 
 ## [4.4.1] - 2019-11-06
 ### Fixed
@@ -869,6 +934,10 @@ The initial version of the Adapt framework.
 ### Added
 - Everything!
 
+[5.7.1]: https://github.com/adaptlearning/adapt_framework/compare/v5.7.0...v5.7.1
+[5.7.0]: https://github.com/adaptlearning/adapt_framework/compare/v5.6.1...v5.7.0
+[5.6.1]: https://github.com/adaptlearning/adapt_framework/compare/v5.6.0...v5.6.1
+[5.6.0]: https://github.com/adaptlearning/adapt_framework/compare/v5.5.1...v5.6.0
 [5.5.1]: https://github.com/adaptlearning/adapt_framework/compare/v5.5.0...v5.5.1
 [5.5.0]: https://github.com/adaptlearning/adapt_framework/compare/v5.4.0...v5.5.0
 [5.4.0]: https://github.com/adaptlearning/adapt_framework/compare/v5.3.0...v5.4.0

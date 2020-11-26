@@ -8,12 +8,14 @@ module.exports = {
       '<%= sourcedir %>less',
       '<%= sourcedir %>templates',
       '<%= sourcedir %>plugins.js',
-      '<%= outputdir %>adapt/js/adapt.min.js.map'
+      '<%= outputdir %>adapt/js/adapt.min.js.map',
+      '<%= outputdir %>.cache'
     ]
   },
   output: {
     src: [
-      '<%= outputdir %>'
+      '<%= outputdir %>/*',
+      '!<%= outputdir %>.cache'
     ]
   },
   temp: {

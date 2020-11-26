@@ -6,8 +6,6 @@ define([
   'core/js/enums/buttonStateEnum'
 ], function(Adapt, ComponentView, ButtonsView, QuestionModel, BUTTON_STATE) {
 
-  const useQuestionModelOnly = false;
-
   class QuestionView extends ComponentView {
 
     className() {
@@ -39,7 +37,6 @@ define([
       this._runModelCompatibleFunction('setupDefaultSettings');
       // Blank method for setting up questions before rendering
       this.setupQuestion();
-
     }
 
     // Used in the question view to disabled the question when _isEnabled has been set to false
@@ -66,7 +63,12 @@ define([
     // Used to check if the question should reset on revisit
     checkIfResetOnRevisit() {
 
-      const isResetOnRevisit = this.model.get('_isResetOnRevisit');
+      let isResetOnRevisit = this.model.get('_isResetOnRevisit');
+
+      // Convert AAT "false" string to boolean
+      isResetOnRevisit = (isResetOnRevisit === "false") ?
+        false :
+        isResetOnRevisit;
 
       // If reset is enabled set defaults
       // Call blank method for question to handle
@@ -185,12 +187,14 @@ define([
       // Used by the question to set the score on the model
       this._runModelCompatibleFunction('setScore');
 
-      // Used by the question to display markings on the component
-      this.showMarking();
-
       // Used to check if the question is complete
       // Triggers setCompletionStatus and adds class to widget
       this._runModelCompatibleFunction('checkQuestionCompletion');
+
+      // Used by the question to display markings on the component
+      if (this.model.shouldShowMarking) {
+        this.showMarking();
+      }
 
       this.recordInteraction();
 
@@ -211,13 +215,12 @@ define([
       // Update buttons happens before showFeedback to preserve tabindexes and after setupFeedback to allow buttons to use feedback attribute
       this._runModelCompatibleFunction('updateButtons');
 
+      this.model.onSubmitted();
       this.onSubmitted();
     }
 
-    // Adds a validation error class when the canSubmit returns false
     showInstructionError() {
-      this.$('.component__instruction-inner').addClass('validation-error');
-      Adapt.a11y.focusFirst(this.$el, { defer: true });
+      Adapt.trigger('questionView:showInstructionError', this);
     }
 
     // Blank method for question to fill out when the question cannot be submitted
@@ -274,11 +277,13 @@ define([
     onResetClicked() {
       this.setQuestionAsReset();
 
-      this._runModelCompatibleFunction('updateButtons');
-
       this._runModelCompatibleFunction('resetUserAnswer');
 
       this.resetQuestion();
+
+      this.model.checkCanSubmit();
+
+      this._runModelCompatibleFunction('updateButtons');
 
       // onResetClicked is called as part of the checkIfResetOnRevisit
       // function and as a button click. if the view is already rendered,
@@ -307,7 +312,7 @@ define([
     refresh() {
       this.model.set('_buttonState', this.model.getButtonState());
 
-      if (this.model.get('_canShowMarking') && this.model.get('_isInteractionComplete') && this.model.get('_isSubmitted')) {
+      if (this.model.shouldShowMarking && this.model.get('_isSubmitted')) {
         this.showMarking();
       }
 
@@ -364,9 +369,6 @@ define([
   }
 
   QuestionView._isQuestionType = true;
-
-  // allows us to turn on and off the questionView style and use the separated questionModel+questionView style only
-  if (useQuestionModelOnly) return QuestionView;
 
   /* BACKWARDS COMPATIBILITY SECTION
   * This section below is only for compatibility between the separated questionView+questionModel and the old questionView

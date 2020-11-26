@@ -617,7 +617,13 @@ define([
             // Drop focus errors as only happens when the element
             // isn't attached to the DOM.
           }
-          window.scrollTo(null, y);
+          switch (Adapt.device.browser) {
+            case 'internet explorer':
+            case 'microsoft edge':
+            case 'safari':
+              // return to previous scroll position due to no support for preventScroll
+              window.scrollTo(null, y);
+          }
         } else {
           $element[0].focus();
         }
@@ -643,7 +649,7 @@ define([
       values = values.filter(Boolean);
       values = values.filter(_.isString);
       htmls = values.join(' ');
-      var text = $('<div>' + htmls + '</div>').html();
+      var text = $('<div>' + htmls + '</div>').text();
       // Remove all html encoded characters, such as &apos;
       return text.replace(this._htmlCharRegex, '');
     },

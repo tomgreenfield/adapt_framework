@@ -18,14 +18,18 @@ define([
         'all': this.onAll,
         'change:_isVisited': this.checkCompletionStatus
       });
+      super.init();
     }
 
-    /**
-     * Returns a string of the model type group.
-     * @returns {string}
-     */
-    getTypeGroup() {
-      return 'itemscomponent';
+    restoreUserAnswers() {
+      const booleanArray = this.get('_userAnswer');
+      if (!booleanArray) return;
+      this.getChildren().forEach((child, index) => child.set('_isVisited', booleanArray[index]));
+    }
+
+    storeUserAnswer() {
+      const booleanArray = this.getChildren().map(child => child.get('_isVisited'));
+      this.set('_userAnswer', booleanArray);
     }
 
     setUpItems() {
@@ -56,6 +60,7 @@ define([
     }
 
     checkCompletionStatus() {
+      this.storeUserAnswer();
       if (!this.areAllItemsCompleted()) return;
       this.setCompletionStatus();
     }

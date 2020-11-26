@@ -56,7 +56,8 @@ define([
         const $app = Adapt.scrolling.$app;
         const $element = this;
         const elementOffset = selectorOffset.call($element);
-        const isCorrectedContainer = $element.parents().add($element).filter('html,body,#app').length;
+        const isCorrectedContainer = $element.is('html, body, #app') ||
+          $element.parents().is('#app');
         if (!isCorrectedContainer) {
           // Do not adjust the offset measurement as not in $app container and isn't html or body
           return elementOffset;
@@ -99,46 +100,17 @@ define([
       });
     }
 
-    scrollTo(selector, settings = {}) {
-      // Get the current location - this is set in the router
-      const location = (Adapt.location._contentType) ?
-        Adapt.location._contentType : Adapt.location._currentLocation;
-      // Trigger initial scrollTo event
-      Adapt.trigger(`${location}:scrollTo`, selector);
-      // Setup duration variable passed upon argumentsß
-      const disableScrollToAnimation = Adapt.config.has('_disableAnimation') ? Adapt.config.get('_disableAnimation') : false;
-      if (disableScrollToAnimation) {
-        settings.duration = 0;
-      } else if (!settings.duration) {
-        settings.duration = $.scrollTo.defaults.duration;
-      }
-
-      let offsetTop = 0;
-      if (Adapt.scrolling.isLegacyScrolling) {
-        offsetTop = -$('.nav').outerHeight();
-        // prevent scroll issue when component description aria-label coincident with top of component
-        if ($(selector).hasClass('component')) {
-          offsetTop -= $(selector).find('.aria-label').height() || 0;
-        }
-      }
-
-      if (!settings.offset) settings.offset = { top: offsetTop, left: 0 };
-      if (settings.offset.top === undefined) settings.offset.top = offsetTop;
-      if (settings.offset.left === undefined) settings.offset.left = 0;
-
-      if (settings.offset.left === 0) settings.axis = 'y';
-
-      if (Adapt.get('_canScroll') !== false) {
-        // Trigger scrollTo plugin
-        $.scrollTo(selector, settings);
-      }
-
-      // Trigger an event after animation
-      // 300 milliseconds added to make sure queue has finished
-      _.delay(() => {
-        Adapt.a11y.focusNext(selector);
-        Adapt.trigger(`${location}:scrolledTo`, selector);
-      }, settings.duration + 300);
+    /**
+     * Allows a selector to be passed in and Adapt will scroll to this element. Resolves
+     * asynchronously when the element has been navigated/scrolled to.
+     * Backend for Adapt.scrollTo
+     * @param {string} selector CSS selector of the Adapt element you want to navigate to e.g. `".co-05"`
+     * @param {Object} [settings={}] The settings for the `$.scrollTo` function (See https://github.com/flesler/jquery.scrollTo#settings).
+     * @param {Object} [settings.replace=false] Set to `true` if you want to update the URL without creating an entry in the browser's history.
+     */
+    async scrollTo(selector, settings = {}) {
+      Adapt.log.deprecated('Adapt.scrollTo and Adapt.scrolling.scrollTo, use Adapt.navigateToElement instead.');
+      return Adapt.router.navigateToElement(selector, settings);
     }
 
   }
