@@ -17,14 +17,12 @@
     "_parentId": {
       "type": "string",
       "isObjectId": true,
-      "title": "Parent id",
-      "default": ""
+      "title": "Parent id"
     },
     "_courseId": {
       "type": "string",
       "isObjectId": true,
       "title": "Course id",
-      "default": "",
       "_adapt": {
         "editorOnly": true
       }

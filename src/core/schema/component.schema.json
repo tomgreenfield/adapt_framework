@@ -12,7 +12,6 @@
           "type": "string",
           "isObjectId": true,
           "title": "Component type",
-          "default": "",
           "_adapt": {
             "editorOnly": true
           },

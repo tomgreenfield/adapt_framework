@@ -72,8 +72,7 @@
                 "properties": {
                   "_id": {
                     "type": "string",
-                    "title": "ID",
-                    "default": ""
+                    "title": "ID"
                   },
                   "_skipIfComplete": {
                     "type": "boolean",

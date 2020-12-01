@@ -31,8 +31,7 @@
     "_courseId": {
       "type": "string",
       "isObjectId": true,
-      "title": "Course id",
-      "default": ""
+      "title": "Course id"
     },
     "_completionCriteria": {
       "type": "object",
@@ -396,8 +395,7 @@
     "_themePreset": {
       "type": "string",
       "isObjectId": true,
-      "title": "Theme preset",
-      "default": ""
+      "title": "Theme preset"
     }
   }
 }
